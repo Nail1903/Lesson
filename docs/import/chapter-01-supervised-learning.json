@@ -1,0 +1,358 @@
+[
+  {
+    "name": "Open-source library and community",
+    "aliases": [
+      "Açıq mənbəli kitabxana və icma"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "təməl anlayış",
+      "kitab-fəsil-1"
+    ],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 3,
+    "shortDef": "Hazır alətləri hamının görə, istifadə edə və inkişaf etdirə bildiyi proqram paketidir.",
+    "longDef": "Mənbə kodu açıq olan, təkrar istifadə edilə bilən proqram komponentləri toplusu və onu inkişaf etdirən istifadəçi-tərtibatçı ekosistemidir. Belə kitabxanalar elmi metodların standart, yoxlanıla bilən tətbiqini sürətləndirir.\n\n**Nümunə:** scikit-learn kitabxanasında hazır təsnifat alqoritmini çağırmaq sıfırdan bütün riyazi kodu yazmaq ehtiyacını azaldır.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 1-2._"
+  },
+  {
+    "name": "Deep Learning",
+    "aliases": [
+      "Dərin öyrənmə"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "təməl anlayış",
+      "kitab-fəsil-1",
+      "neyron şəbəkə"
+    ],
+    "difficulty": "INTERMEDIATE",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 5,
+    "shortDef": "Çox qatlı neyron şəbəkəsinin məlumatdan mürəkkəb xüsusiyyətləri özü öyrənməsidir.",
+    "longDef": "Çoxqatlı süni neyron şəbəkələri vasitəsilə verilənlərin mərhələli və iyerarxik təsvirlərini öyrənən maşın öyrənməsi alt sahəsidir.\n\n**Nümunə:** Şəkildən dəri zədəsinin əlamətlərini öyrənib riskli nümunəni seçən şəbəkə dərin öyrənmə modelidir.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 1-2._"
+  },
+  {
+    "name": "Computer Vision",
+    "aliases": [
+      "Kompüter görməsi"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "təməl anlayış",
+      "kitab-fəsil-1",
+      "tətbiq sahəsi"
+    ],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 3,
+    "shortDef": "Kompüterin şəkil və videodakı məzmunu anlamasıdır.",
+    "longDef": "Rəqəmsal şəkil və videolardan obyekt, forma, hərəkət və semantik məna çıxaran süni intellekt sahəsidir.\n\n**Nümunə:** Bitki şəklindən xəstəlik əlamətini müəyyən edən sistem kompüter görməsindən istifadə edir.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 1-2._"
+  },
+  {
+    "name": "Supervised Learning",
+    "aliases": [
+      "Nəzarətli öyrənmə"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "nəzarətli öyrənmə",
+      "kitab-fəsil-1"
+    ],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 5,
+    "shortDef": "Modelə həm sual, həm də düzgün cavab nümunələri göstərilir.",
+    "longDef": "Giriş nümunələri ilə onlara uyğun məlum çıxışların birlikdə verildiyi və bu əlaqəni ümumiləşdirən modelin öyrədildiyi maşın öyrənməsi növüdür. Formal olaraq model f(x) funksiyası ilə x girişini y hədəfinə xəritələməyi öyrənir.\n\n**Nümunə:** Spam və normal kimi işarələnmiş məktublarla model öyrədilir, sonra yeni məktub təsnif edilir.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 2-6._"
+  },
+  {
+    "name": "Labeled training data",
+    "aliases": [
+      "Etiketlənmiş təlim verilənləri"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "nəzarətli öyrənmə",
+      "kitab-fəsil-1"
+    ],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 5,
+    "shortDef": "Hər nümunənin yanında düzgün cavabın yazıldığı məlumatdır.",
+    "longDef": "Hər giriş nümunəsi üçün arzu olunan çıxışın və ya sinif etiketinin əvvəlcədən məlum olduğu təlim toplusudur.\n\n**Nümunə:** Hər çiçək ölçüsünün yanında Setosa, Versicolor və ya Virginica adının olması etiketlənmiş məlumat yaradır.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 2-6._"
+  },
+  {
+    "name": "Training example / observation / record / instance / sample",
+    "aliases": [
+      "Təlim nümunəsi / müşahidə / qeyd / instansiya / seçmə nümunəsi",
+      "Training instance",
+      "Observation"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "nəzarətli öyrənmə",
+      "kitab-fəsil-1",
+      "terminologiya"
+    ],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 4,
+    "shortDef": "Cədvəldəki bir sətir bir obyekt haqqında tam qeyddir.",
+    "longDef": "Verilənlər cədvəlində bir obyektə və ya hadisəyə aid bütün xüsusiyyətləri daşıyan vahid qeyddir. Terminologiyada training example, observation, record və instance çox vaxt eyni mənada işlənir; sample isə kontekstdən asılı olaraq bir nümunə və ya nümunələr toplusu ola bilər.\n\n**Nümunə:** Bir tələbənin dərs saatı, davamiyyəti və yekun balı birlikdə bir təlim nümunəsidir.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 2-6._"
+  },
+  {
+    "name": "Input / data input",
+    "aliases": [
+      "Giriş / verilənlər girişi"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "nəzarətli öyrənmə",
+      "kitab-fəsil-1"
+    ],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 4,
+    "shortDef": "Modelə verdiyimiz məlumatdır.",
+    "longDef": "Modelə proqnoz yaratmaq üçün təqdim olunan xüsusiyyətlər vektoru və ya məlumat obyektidir.\n\n**Nümunə:** Bir ev üçün sahə, otaq sayı və ünvan qiymət modelinin girişləridir.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 2-6._"
+  },
+  {
+    "name": "Label / output signal / ground truth",
+    "aliases": [
+      "Etiket / çıxış siqnalı / həqiqi cavab",
+      "Ground truth"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "nəzarətli öyrənmə",
+      "kitab-fəsil-1"
+    ],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 4,
+    "shortDef": "Modelin öyrənərkən müqayisə etdiyi düzgün cavabdır.",
+    "longDef": "Nəzarətli öyrənmədə nümunəyə uyğun məlum cavabdır. Ground truth müşahidə və ya etibarlı annotasiya yolu ilə qəbul edilmiş istinad cavabını bildirir.\n\n**Nümunə:** Məktubun həqiqətən spam olması y=1 etiketi və model üçün ground truth-dur.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 2-6._"
+  },
+  {
+    "name": "Unseen and unlabeled data",
+    "aliases": [
+      "Görülməmiş və etiketsiz verilənlər"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "nəzarətli öyrənmə",
+      "kitab-fəsil-1",
+      "ümumiləşdirmə"
+    ],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 4,
+    "shortDef": "Modelin əvvəllər görmədiyi, cavabı yazılmamış yeni məlumatdır.",
+    "longDef": "Modelin təlim zamanı istifadə etmədiyi və çıxışı əvvəlcədən modelə verilməyən yeni nümunələrdir. Ümumiləşdirmə qabiliyyəti məhz belə nümunələrdə qiymətləndirilir.\n\n**Nümunə:** Bu gün gələn yeni məktub təlim bazasında olmayıbsa, model üçün görülməmiş məlumatdır.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 2-6._"
+  },
+  {
+    "name": "Classification",
+    "aliases": [
+      "Təsnifat"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "nəzarətli öyrənmə",
+      "təsnifat",
+      "kitab-fəsil-1"
+    ],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 5,
+    "shortDef": "Obyekti uyğun qrupa salmaqdır.",
+    "longDef": "Nəzarətli öyrənmənin giriş nümunəsini əvvəlcədən müəyyən edilmiş diskret kateqoriyalardan birinə və ya bir neçəsinə aid etmə vəzifəsidir.\n\n**Nümunə:** Əməliyyatı 'normal', 'riskli' və ya 'kritik' sinfinə aid etmək təsnifatdır.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 2-6._"
+  },
+  {
+    "name": "Categorical class label",
+    "aliases": [
+      "Kateqorial sinif etiketi"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "təsnifat",
+      "kitab-fəsil-1"
+    ],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 3,
+    "shortDef": "Nəticə rəqəm ölçüsü yox, qrupun adıdır.",
+    "longDef": "Miqdar ölçüsü deyil, qrup kimliyini ifadə edən diskret hədəf qiymətidir. Sinif adları arasında çox vaxt təbii ədədi məsafə və sıralama yoxdur.\n\n**Nümunə:** 'Spam' və 'normal' iki kateqorial etiketdir; 'normal' spamdan iki dəfə böyük deyil.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 2-6._"
+  },
+  {
+    "name": "Discrete and unordered values",
+    "aliases": [
+      "Diskret və sıralanmayan qiymətlər"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "təsnifat",
+      "kitab-fəsil-1"
+    ],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 3,
+    "shortDef": "Bir-birindən ayrı adlardır; onları böyük-kiçik kimi müqayisə etmək olmaz.",
+    "longDef": "Ayrı-ayrı sonlu və ya sayılan kateqoriyalardan ibarət, aralarında məcburi böyüklük sırası olmayan qiymətlərdir.\n\n**Nümunə:** A, B və C hərf sinifləri diskretdir; C sinfi A-dan 'daha çox' demək deyil.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 2-6._"
+  },
+  {
+    "name": "Class membership",
+    "aliases": [
+      "Sinif mənsubiyyəti"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "təsnifat",
+      "kitab-fəsil-1"
+    ],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 3,
+    "shortDef": "Nümunənin hansı qrupa məxsus olmasıdır.",
+    "longDef": "Müşahidənin xüsusiyyətlərinə əsasən müəyyən kateqoriyaya aid olması faktı və ya ehtimalıdır.\n\n**Nümunə:** Yeni çiçəyin ölçülərinə görə Setosa sinfinə aid edilməsi onun sinif mənsubiyyətidir.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 2-6._"
+  },
+  {
+    "name": "Binary classification",
+    "aliases": [
+      "İkili təsnifat"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "təsnifat",
+      "kitab-fəsil-1"
+    ],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 4,
+    "shortDef": "İki cavabdan birini seçməkdir.",
+    "longDef": "Hədəf dəyişənin yalnız iki mümkün sinifdən birini aldığı təsnifat problemidir.\n\n**Nümunə:** Məktubun spam və ya normal müəyyən edilməsi ikili təsnifatdır.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 2-6._"
+  },
+  {
+    "name": "Multiclass classification",
+    "aliases": [
+      "Çoxsinifli təsnifat"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "təsnifat",
+      "kitab-fəsil-1"
+    ],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 4,
+    "shortDef": "İkidən çox qrup arasından düzgününü seçməkdir.",
+    "longDef": "Hədəf dəyişənin üç və ya daha çox qarşılıqlı fərqlənən sinifdən birini aldığı təsnifat problemidir.\n\n**Nümunə:** Əlyazma simvolunu A-dan Z-yə qədər hərflərdən biri kimi tanımaq çoxsinifli təsnifatdır.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 2-6._"
+  },
+  {
+    "name": "Decision boundary",
+    "aliases": [
+      "Qərar sərhədi"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "təsnifat",
+      "kitab-fəsil-1",
+      "həndəsə"
+    ],
+    "difficulty": "INTERMEDIATE",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 4,
+    "shortDef": "Bir tərəfdə A, digər tərəfdə B qərarı verilən ayırıcı xətdir.",
+    "longDef": "Xüsusiyyət fəzasını modelin fərqli sinif proqnozu verdiyi regionlara ayıran həndəsi sərhəddir.\n\n**Nümunə:** İki xüsusiyyətli qrafikdə spam və normal məktubları ayıran xətt qərar sərhədidir.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 2-6._"
+  },
+  {
+    "name": "Feature / predictor / explanatory variable / attribute / covariate",
+    "aliases": [
+      "Xüsusiyyət / proqnozlaşdırıcı / izahedici dəyişən / atribut / kovariat",
+      "Feature",
+      "Predictor"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "nəzarətli öyrənmə",
+      "kitab-fəsil-1",
+      "terminologiya"
+    ],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 5,
+    "shortDef": "Modelin qərar vermək üçün baxdığı göstəricidir.",
+    "longDef": "Modelin hədəfi izah və ya proqnoz etmək üçün istifadə etdiyi giriş dəyişənidir; cədvəldə adətən bir sütunla təmsil olunur və x ilə işarə edilir.\n\n**Nümunə:** Tələbənin dərsə ayırdığı saat imtahan balını proqnozlaşdıran xüsusiyyət ola bilər.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 2-6._"
+  },
+  {
+    "name": "Target / outcome / response / dependent variable",
+    "aliases": [
+      "Hədəf / nəticə / cavab / asılı dəyişən",
+      "Target variable",
+      "Response variable"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "nəzarətli öyrənmə",
+      "kitab-fəsil-1",
+      "terminologiya"
+    ],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 5,
+    "shortDef": "Modelin tapmalı olduğu cavabdır.",
+    "longDef": "Modelin proqnozlaşdırmağa çalışdığı çıxış dəyişənidir və adətən y ilə işarə olunur. Təsnifatda sinif etiketi, reqressiyada isə ədədi nəticə ola bilər.\n\n**Nümunə:** Tələbənin yekun SAT balı proqnoz modelinin hədəf dəyişənidir.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 2-6._"
+  },
+  {
+    "name": "Regression analysis",
+    "aliases": [
+      "Reqressiya təhlili"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "nəzarətli öyrənmə",
+      "reqressiya",
+      "kitab-fəsil-1"
+    ],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 5,
+    "shortDef": "Rəqəmlə ölçülən nəticəni təxmin etməkdir.",
+    "longDef": "Bir və ya bir neçə giriş dəyişəni ilə davamlı ədədi hədəf arasındakı funksional və ya statistik əlaqəni qiymətləndirən nəzarətli öyrənmə yanaşmasıdır.\n\n**Nümunə:** Təhsil saatına görə 0-1600 aralığında SAT balını proqnozlaşdırmaq reqressiyadır.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 2-6._"
+  },
+  {
+    "name": "Continuous outcome",
+    "aliases": [
+      "Davamlı nəticə"
+    ],
+    "category": "Machine Learning",
+    "tags": [
+      "reqressiya",
+      "kitab-fəsil-1"
+    ],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 4,
+    "shortDef": "Yalnız qrup adı yox, aralıqdakı istənilən rəqəm ola bilən nəticədir.",
+    "longDef": "Müəyyən intervalda nəzəri olaraq sonsuz sayda ədədi qiymət ala bilən hədəf dəyişənidir.\n\n**Nümunə:** Gündəlik qaz sərfinin 12 438.7 m³ olması davamlı nəticə nümunəsidir.\n\n_Mənbə: Dərslik — Fəsil 1, səh. 2-6._"
+  }
+]
