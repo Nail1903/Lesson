@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 224 20% 12%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 20% 12%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 20% 12%;
+    --primary: 262 63% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 224 20% 20%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 42%;
+    --accent: 262 60% 96%;
+    --accent-foreground: 262 63% 30%;
+    --destructive: 0 72% 48%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 90%;
+    --input: 220 13% 88%;
+    --ring: 262 63% 45%;
+    --radius: 0.625rem;
+  }
+
+  .dark {
+    --background: 224 24% 8%;
+    --foreground: 210 20% 92%;
+    --card: 224 22% 11%;
+    --card-foreground: 210 20% 92%;
+    --popover: 224 22% 11%;
+    --popover-foreground: 210 20% 92%;
+    --primary: 258 75% 68%;
+    --primary-foreground: 224 24% 8%;
+    --secondary: 223 18% 18%;
+    --secondary-foreground: 210 20% 88%;
+    --muted: 223 18% 16%;
+    --muted-foreground: 220 12% 62%;
+    --accent: 258 40% 22%;
+    --accent-foreground: 258 75% 82%;
+    --destructive: 0 62% 52%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 223 16% 22%;
+    --input: 223 16% 24%;
+    --ring: 258 75% 68%;
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .prose-note {
+    @apply text-sm leading-relaxed text-foreground/90;
+  }
+  .prose-note h1 { @apply mt-4 mb-2 text-xl font-semibold; }
+  .prose-note h2 { @apply mt-4 mb-2 text-lg font-semibold; }
+  .prose-note h3 { @apply mt-3 mb-1 text-base font-semibold; }
+  .prose-note p { @apply my-2; }
+  .prose-note ul { @apply my-2 list-disc pl-5; }
+  .prose-note ol { @apply my-2 list-decimal pl-5; }
+  .prose-note blockquote { @apply my-2 border-l-2 border-primary/40 pl-3 italic text-muted-foreground; }
+  .prose-note code { @apply rounded bg-muted px-1 py-0.5 font-mono text-[0.85em]; }
+  .prose-note pre { @apply my-3 overflow-x-auto rounded-lg bg-muted p-3 text-[0.85em]; }
+  .prose-note pre code { @apply bg-transparent p-0; }
+  .prose-note table { @apply my-3 w-full border-collapse text-sm; }
+  .prose-note th, .prose-note td { @apply border border-border px-2 py-1 text-left; }
+  .prose-note a { @apply text-primary underline underline-offset-2; }
+}
+
+/* KaTeX + highlight.js are imported per-component to keep the base bundle small. */
