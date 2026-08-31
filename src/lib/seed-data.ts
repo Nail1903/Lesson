@@ -403,6 +403,168 @@ export const SEED_TERMS: SeedTerm[] = [
     practicalUse:
       "Paylanmış nəzarətçi dizaynı, çoxagentli sistemlər, sensor şəbəkələri, federativ öyrənmə, GNN dərinliyinin seçimi.",
   },
+
+  // ── Kitab, Fəsil 1 (səh. 1-2): Süni intellekt və maşın öyrənməsinin təməl anlayışları ──
+  {
+    name: "Data",
+    category: "machine-learning",
+    aliases: ["Verilənlər"],
+    tags: ["təməl anlayış", "kitab-fəsil-1"],
+    difficulty: "BEGINNER",
+    status: "NEW",
+    confidence: 1,
+    importance: 5,
+    shortDef: "Modelin öyrəndiyi rəqəmlər, mətnlər, şəkillər və digər qeydlərdir.",
+    longDef:
+      "Hadisələr, obyektlər və proseslər haqqında ölçülmüş, müşahidə edilmiş və ya qeydə alınmış faktların hesablama üçün təqdim olunan formasıdır. Verilənlər model üçün empirik bilik mənbəyidir.",
+    examples: [
+      {
+        kind: "EVERYDAY",
+        body: "Qaz sərfi, təzyiq, tarix və hava temperaturu sütunları bir verilənlər toplusu yarada bilər.",
+      },
+    ],
+    sources: [{ kind: "BOOK", title: "Dərslik — Fəsil 1", pages: "1-2" }],
+  },
+  {
+    name: "Structured and unstructured data",
+    category: "machine-learning",
+    aliases: ["Strukturlaşdırılmış və strukturlaşdırılmamış verilənlər"],
+    tags: ["təməl anlayış", "kitab-fəsil-1"],
+    difficulty: "BEGINNER",
+    status: "NEW",
+    confidence: 1,
+    importance: 4,
+    shortDef: "Excel cədvəli strukturlaşdırılmışdır; foto və sərbəst yazılmış mətn strukturlaşdırılmamışdır.",
+    longDef:
+      "Strukturlaşdırılmış verilənlər əvvəlcədən müəyyən edilmiş sxemə, sətir və sütunlara malikdir; strukturlaşdırılmamış verilənlər isə sərbəst mətn, şəkil, səs və video kimi sabit cədvəl quruluşuna malik olmayan məzmundur.",
+    examples: [
+      {
+        kind: "EVERYDAY",
+        body: "Müştəri nömrəsi və aylıq sərf cədvəl məlumatıdır, çağrı mərkəzinin səs yazısı isə strukturlaşdırılmamış məlumatdır.",
+      },
+    ],
+    sources: [{ kind: "BOOK", title: "Dərslik — Fəsil 1", pages: "1-2" }],
+  },
+  {
+    name: "Algorithm",
+    category: "machine-learning",
+    aliases: ["Alqoritm"],
+    tags: ["təməl anlayış", "kitab-fəsil-1"],
+    difficulty: "BEGINNER",
+    status: "NEW",
+    confidence: 1,
+    importance: 5,
+    shortDef: "Nəticəyə çatmaq üçün kompüterin izlədiyi addımlar planıdır.",
+    longDef:
+      "Müəyyən problemi həll etmək və ya hesablamanı həyata keçirmək üçün dəqiq ardıcıllıqla icra olunan qaydalar və əməliyyatlar toplusudur. Maşın öyrənməsində alqoritm verilənlərdən model parametrlərini öyrənmə prosedurunu müəyyən edir.",
+    examples: [
+      {
+        kind: "EVERYDAY",
+        body: "Təsnifat alqoritmi məktublardakı sözlərə baxaraq spamı ayıran modeli öyrədir.",
+      },
+    ],
+    sources: [{ kind: "BOOK", title: "Dərslik — Fəsil 1", pages: "1-2" }],
+  },
+  {
+    name: "Self-learning algorithm",
+    category: "machine-learning",
+    aliases: ["Öz-özünə öyrənən alqoritm"],
+    tags: ["təməl anlayış", "kitab-fəsil-1"],
+    difficulty: "BEGINNER",
+    status: "NEW",
+    confidence: 1,
+    importance: 4,
+    shortDef: "Daha çox nümunə gördükcə qaydalarını məlumatdan yaxşılaşdıran alqoritmdir.",
+    longDef:
+      "Yeni nümunələrdən statistik əlaqələr çıxararaq performansını məlumat əsasında yaxşılaşdıran öyrənmə prosedurudur. Buradakı 'öz-özünə' ifadəsi nəzarətsiz və məqsədsiz davranış deyil, optimallaşdırma meyarı üzrə avtomatik uyğunlaşma deməkdir.",
+    examples: [
+      {
+        kind: "EVERYDAY",
+        body: "Əvvəl az məktubla zəif işləyən spam filtri daha çox düzgün etiketli məktubla yenidən öyrədildikdə yaxşılaşır.",
+      },
+    ],
+    sources: [{ kind: "BOOK", title: "Dərslik — Fəsil 1", pages: "1-2" }],
+  },
+  {
+    name: "Pattern and knowledge extraction",
+    category: "machine-learning",
+    aliases: ["Qanunauyğunluq və bilik çıxarılması"],
+    tags: ["təməl anlayış", "kitab-fəsil-1"],
+    difficulty: "BEGINNER",
+    status: "NEW",
+    confidence: 1,
+    importance: 4,
+    shortDef: "Çoxlu qeydlərin içində təkrarlanan mənalı qaydanı tapmaqdır.",
+    longDef:
+      "Verilənlərdə təkrarlanan statistik quruluşların, asılılıqların və faydalı siqnalların aşkar edilərək qərarvermədə istifadə edilə bilən təsvirə çevrilməsidir.",
+    examples: [
+      {
+        kind: "EVERYDAY",
+        body: "Model soyuq günlərdə qaz sərfinin artdığını ardıcıl müşahidələrdən öyrənir.",
+      },
+    ],
+    sources: [{ kind: "BOOK", title: "Dərslik — Fəsil 1", pages: "1-2" }],
+  },
+  {
+    name: "Model",
+    category: "machine-learning",
+    aliases: ["Model (ML)"],
+    tags: ["təməl anlayış", "kitab-fəsil-1"],
+    difficulty: "BEGINNER",
+    status: "NEW",
+    confidence: 1,
+    importance: 5,
+    shortDef: "Məlumatdan öyrənilmiş, yeni hal üçün cavab verən qaydadır.",
+    longDef:
+      "Giriş dəyişənləri ilə nəticə arasındakı əlaqəni parametrlər və funksional quruluş vasitəsilə təmsil edən riyazi və ya hesablama obyektidir.",
+    examples: [
+      {
+        kind: "EVERYDAY",
+        body: "Öyrənilmiş model tələbənin dərs saatına əsasən imtahan balını hesablayır.",
+      },
+    ],
+    sources: [{ kind: "BOOK", title: "Dərslik — Fəsil 1", pages: "1-2" }],
+  },
+  {
+    name: "Predictive model and prediction",
+    category: "machine-learning",
+    aliases: ["Proqnozlaşdırıcı model və proqnoz"],
+    tags: ["təməl anlayış", "kitab-fəsil-1"],
+    difficulty: "BEGINNER",
+    status: "NEW",
+    confidence: 1,
+    importance: 4,
+    shortDef: "Model proqnoz verən mexanizmdir, proqnoz isə onun verdiyi konkret cavabdır.",
+    longDef:
+      "Proqnozlaşdırıcı model müşahidə olunan girişlərdən gələcək və ya naməlum nəticəni qiymətləndirən funksiyadır; proqnoz isə həmin funksiyanın konkret giriş üçün yaratdığı nəticədir.",
+    examples: [
+      {
+        kind: "EVERYDAY",
+        body: "Model sabahkı temperatur və əvvəlki sərfə baxıb 12 500 m³ qaz tələbi proqnozu verir.",
+      },
+    ],
+    sources: [{ kind: "BOOK", title: "Dərslik — Fəsil 1", pages: "1-2" }],
+  },
+  {
+    name: "Data-driven decision",
+    category: "machine-learning",
+    aliases: ["Verilənlərə əsaslanan qərar"],
+    tags: ["təməl anlayış", "kitab-fəsil-1"],
+    difficulty: "BEGINNER",
+    status: "NEW",
+    confidence: 1,
+    importance: 4,
+    shortDef: "Fikrə yox, məlumatın göstərdiyi nəticəyə əsasən seçim etməkdir.",
+    longDef:
+      "Qərarın yalnız intuitiv mühakimə ilə deyil, ölçülmüş faktlar, statistik təhlil və model nəticələri əsasında formalaşdırılmasıdır.",
+    examples: [
+      {
+        kind: "EVERYDAY",
+        body: "Anbar ehtiyatını əvvəlki satış və tələb proqnozuna əsasən artırmaq verilənlərə əsaslanan qərardır.",
+      },
+    ],
+    sources: [{ kind: "BOOK", title: "Dərslik — Fəsil 1", pages: "1-2" }],
+  },
 ];
 
 export const SEED_RELATIONS: SeedRelation[] = [
@@ -421,6 +583,16 @@ export const SEED_RELATIONS: SeedRelation[] = [
   { from: "Digital Twin", to: "Graph Neural Network", type: "USED_TOGETHER", note: "Şəbəkə əkizlərində GNN state estimation üçün istifadə oluna bilər." },
   { from: "Information Constraints", to: "Graph Neural Network", type: "CONTINUATION_OF", note: "GNN dərinliyi = əlçatan məlumat üfüqü." },
   { from: "Information Constraints", to: "Model Predictive Control", type: "USED_TOGETHER", note: "Paylanmış MPC-də hər nəzarətçi lokal məlumatla işləyir." },
+
+  // Kitab, Fəsil 1 daxili əlaqələr
+  { from: "Data", to: "Machine Learning", type: "PREREQUISITE_FOR", note: "ML verilənlərdən öyrənir — data ilkin şərtdir." },
+  { from: "Structured and unstructured data", to: "Data", type: "PART_OF" },
+  { from: "Algorithm", to: "Machine Learning", type: "PREREQUISITE_FOR", note: "Alqoritm öyrənmə prosedurunu müəyyən edir." },
+  { from: "Self-learning algorithm", to: "Algorithm", type: "CONTINUATION_OF", note: "Verilənlərdən avtomatik uyğunlaşan alqoritm." },
+  { from: "Model", to: "Algorithm", type: "CONTINUATION_OF", note: "Alqoritm öyrədir, model isə onun nəticəsidir." },
+  { from: "Pattern and knowledge extraction", to: "Machine Learning", type: "PART_OF" },
+  { from: "Predictive model and prediction", to: "Model", type: "CONTINUATION_OF" },
+  { from: "Data-driven decision", to: "Predictive model and prediction", type: "USED_TOGETHER", note: "Proqnoz qərarın girişidir." },
 ];
 
 export interface SeedTopic {
@@ -445,6 +617,31 @@ export interface SeedSubject {
  * canonical /terms/[slug] page.
  */
 export const SEED_SUBJECTS: SeedSubject[] = [
+  {
+    slug: "ai-ml-temelleri",
+    name: "Süni intellekt və maşın öyrənməsinin təməlləri",
+    color: "#7c3aed",
+    description: "Dərslik əsasında təməl anlayışlar.",
+    topics: [
+      {
+        slug: "temel-anlayislar-seh-1-2",
+        name: "1. Təməl anlayışlar (səh. 1-2)",
+        description: "Süni intellekt və maşın öyrənməsinin təməl anlayışları. Mənbə: kitabın 1-2-ci səhifələri.",
+        terms: [
+          "Artificial Intelligence",
+          "Machine Learning",
+          "Data",
+          "Structured and unstructured data",
+          "Algorithm",
+          "Self-learning algorithm",
+          "Pattern and knowledge extraction",
+          "Model",
+          "Predictive model and prediction",
+          "Data-driven decision",
+        ],
+      },
+    ],
+  },
   {
     slug: "graph-representation-learning",
     name: "Graph Representation Learning",

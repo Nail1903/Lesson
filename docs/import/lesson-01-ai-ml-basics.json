@@ -1,0 +1,122 @@
+[
+  {
+    "name": "Artificial Intelligence",
+    "aliases": ["Süni intellekt", "Sİ", "AI"],
+    "category": "Süni intellekt",
+    "tags": ["təməl anlayış", "kitab-fəsil-1"],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 2,
+    "importance": 5,
+    "shortDef": "Kompüterə insan kimi müəyyən işi başa düşmək və qərar vermək imkanı yaratmaqdır.",
+    "longDef": "İnsan zəkası ilə əlaqələndirilən qavrama, öyrənmə, məntiqi nəticə çıxarma və qərarvermə funksiyalarını hesablama sistemi vasitəsilə yerinə yetirməyə yönəlmiş elmi-texniki sahədir.\n\n**Nümunə:** Səsli köməkçinin danışığı tanıyıb uyğun cavab verməsi süni intellekt tətbiqidir.\n\n_Mənbə: Dərslik, Fəsil 1, səh. 1-2._"
+  },
+  {
+    "name": "Machine Learning",
+    "aliases": ["Maşın öyrənməsi", "MÖ", "ML"],
+    "category": "Machine Learning",
+    "tags": ["təməl anlayış", "kitab-fəsil-1"],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 2,
+    "importance": 5,
+    "shortDef": "Kompüterə hazır qaydalar vermirik; ona nümunələr göstəririk və qaydanı özü tapır.",
+    "longDef": "Süni intellektin verilənlərdən qanunauyğunluq öyrənən, aşkar edilmiş əlaqələr əsasında proqnoz və ya qərar yaradan alqoritmləri öyrənən alt sahəsidir. Modelin davranışı bütün qaydaların proqramçı tərəfindən əl ilə yazılması əvəzinə verilənlərdən formalaşır.\n\n**Nümunə:** Minlərlə məktubun spam və normal nümunələrini görən model yeni məktubun spam olub-olmadığını təxmin edir.\n\n_Mənbə: Dərslik, Fəsil 1, səh. 1-2._"
+  },
+  {
+    "name": "Data",
+    "aliases": ["Verilənlər"],
+    "category": "Machine Learning",
+    "tags": ["təməl anlayış", "kitab-fəsil-1"],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 5,
+    "shortDef": "Modelin öyrəndiyi rəqəmlər, mətnlər, şəkillər və digər qeydlərdir.",
+    "longDef": "Hadisələr, obyektlər və proseslər haqqında ölçülmüş, müşahidə edilmiş və ya qeydə alınmış faktların hesablama üçün təqdim olunan formasıdır. Verilənlər model üçün empirik bilik mənbəyidir.\n\n**Nümunə:** Qaz sərfi, təzyiq, tarix və hava temperaturu sütunları bir verilənlər toplusu yarada bilər.\n\n_Mənbə: Dərslik, Fəsil 1, səh. 1-2._"
+  },
+  {
+    "name": "Structured and unstructured data",
+    "aliases": ["Strukturlaşdırılmış və strukturlaşdırılmamış verilənlər"],
+    "category": "Machine Learning",
+    "tags": ["təməl anlayış", "kitab-fəsil-1"],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 4,
+    "shortDef": "Excel cədvəli strukturlaşdırılmışdır; foto və sərbəst yazılmış mətn strukturlaşdırılmamışdır.",
+    "longDef": "Strukturlaşdırılmış verilənlər əvvəlcədən müəyyən edilmiş sxemə, sətir və sütunlara malikdir; strukturlaşdırılmamış verilənlər isə sərbəst mətn, şəkil, səs və video kimi sabit cədvəl quruluşuna malik olmayan məzmundur.\n\n**Nümunə:** Müştəri nömrəsi və aylıq sərf cədvəl məlumatıdır, çağrı mərkəzinin səs yazısı isə strukturlaşdırılmamış məlumatdır.\n\n_Mənbə: Dərslik, Fəsil 1, səh. 1-2._"
+  },
+  {
+    "name": "Algorithm",
+    "aliases": ["Alqoritm"],
+    "category": "Machine Learning",
+    "tags": ["təməl anlayış", "kitab-fəsil-1"],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 5,
+    "shortDef": "Nəticəyə çatmaq üçün kompüterin izlədiyi addımlar planıdır.",
+    "longDef": "Müəyyən problemi həll etmək və ya hesablamanı həyata keçirmək üçün dəqiq ardıcıllıqla icra olunan qaydalar və əməliyyatlar toplusudur. Maşın öyrənməsində alqoritm verilənlərdən model parametrlərini öyrənmə prosedurunu müəyyən edir.\n\n**Nümunə:** Təsnifat alqoritmi məktublardakı sözlərə baxaraq spamı ayıran modeli öyrədir.\n\n_Mənbə: Dərslik, Fəsil 1, səh. 1-2._"
+  },
+  {
+    "name": "Self-learning algorithm",
+    "aliases": ["Öz-özünə öyrənən alqoritm"],
+    "category": "Machine Learning",
+    "tags": ["təməl anlayış", "kitab-fəsil-1"],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 4,
+    "shortDef": "Daha çox nümunə gördükcə qaydalarını məlumatdan yaxşılaşdıran alqoritmdir.",
+    "longDef": "Yeni nümunələrdən statistik əlaqələr çıxararaq performansını məlumat əsasında yaxşılaşdıran öyrənmə prosedurudur. Buradakı 'öz-özünə' ifadəsi nəzarətsiz və məqsədsiz davranış deyil, optimallaşdırma meyarı üzrə avtomatik uyğunlaşma deməkdir.\n\n**Nümunə:** Əvvəl az məktubla zəif işləyən spam filtri daha çox düzgün etiketli məktubla yenidən öyrədildikdə yaxşılaşır.\n\n_Mənbə: Dərslik, Fəsil 1, səh. 1-2._"
+  },
+  {
+    "name": "Pattern and knowledge extraction",
+    "aliases": ["Qanunauyğunluq və bilik çıxarılması"],
+    "category": "Machine Learning",
+    "tags": ["təməl anlayış", "kitab-fəsil-1"],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 4,
+    "shortDef": "Çoxlu qeydlərin içində təkrarlanan mənalı qaydanı tapmaqdır.",
+    "longDef": "Verilənlərdə təkrarlanan statistik quruluşların, asılılıqların və faydalı siqnalların aşkar edilərək qərarvermədə istifadə edilə bilən təsvirə çevrilməsidir.\n\n**Nümunə:** Model soyuq günlərdə qaz sərfinin artdığını ardıcıl müşahidələrdən öyrənir.\n\n_Mənbə: Dərslik, Fəsil 1, səh. 1-2._"
+  },
+  {
+    "name": "Model",
+    "aliases": ["Model (ML)"],
+    "category": "Machine Learning",
+    "tags": ["təməl anlayış", "kitab-fəsil-1"],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 5,
+    "shortDef": "Məlumatdan öyrənilmiş, yeni hal üçün cavab verən qaydadır.",
+    "longDef": "Giriş dəyişənləri ilə nəticə arasındakı əlaqəni parametrlər və funksional quruluş vasitəsilə təmsil edən riyazi və ya hesablama obyektidir.\n\n**Nümunə:** Öyrənilmiş model tələbənin dərs saatına əsasən imtahan balını hesablayır.\n\n_Mənbə: Dərslik, Fəsil 1, səh. 1-2._"
+  },
+  {
+    "name": "Predictive model and prediction",
+    "aliases": ["Proqnozlaşdırıcı model və proqnoz"],
+    "category": "Machine Learning",
+    "tags": ["təməl anlayış", "kitab-fəsil-1"],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 4,
+    "shortDef": "Model proqnoz verən mexanizmdir, proqnoz isə onun verdiyi konkret cavabdır.",
+    "longDef": "Proqnozlaşdırıcı model müşahidə olunan girişlərdən gələcək və ya naməlum nəticəni qiymətləndirən funksiyadır; proqnoz isə həmin funksiyanın konkret giriş üçün yaratdığı nəticədir.\n\n**Nümunə:** Model sabahkı temperatur və əvvəlki sərfə baxıb 12 500 m³ qaz tələbi proqnozu verir.\n\n_Mənbə: Dərslik, Fəsil 1, səh. 1-2._"
+  },
+  {
+    "name": "Data-driven decision",
+    "aliases": ["Verilənlərə əsaslanan qərar"],
+    "category": "Machine Learning",
+    "tags": ["təməl anlayış", "kitab-fəsil-1"],
+    "difficulty": "BEGINNER",
+    "status": "NEW",
+    "confidence": 1,
+    "importance": 4,
+    "shortDef": "Fikrə yox, məlumatın göstərdiyi nəticəyə əsasən seçim etməkdir.",
+    "longDef": "Qərarın yalnız intuitiv mühakimə ilə deyil, ölçülmüş faktlar, statistik təhlil və model nəticələri əsasında formalaşdırılmasıdır.\n\n**Nümunə:** Anbar ehtiyatını əvvəlki satış və tələb proqnozuna əsasən artırmaq verilənlərə əsaslanan qərardır.\n\n_Mənbə: Dərslik, Fəsil 1, səh. 1-2._"
+  }
+]
