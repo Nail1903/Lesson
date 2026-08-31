@@ -30,15 +30,19 @@ const GRADES = [
 
 export function ReviewSession({ cards }: { cards: Cardio[] }) {
   const router = useRouter();
+  // Freeze the queue for the whole run. Even if the route revalidates while a
+  // session is in progress, the deck the user is stepping through never changes.
+  const [deck] = React.useState<Cardio[]>(cards);
   const [idx, setIdx] = React.useState(0);
   const [revealed, setRevealed] = React.useState(false);
   const [done, setDone] = React.useState(0);
+  const [finished, setFinished] = React.useState(false);
   const [pending, start] = React.useTransition();
 
-  const card = cards[idx];
+  const card = deck[idx];
 
   function grade(key: (typeof GRADES)[number]["key"]) {
-    if (!card) return;
+    if (!card || pending) return;
     start(async () => {
       const res = await reviewGradeAction({ termId: card.id, grade: key, source: "flashcard" });
       if (!res.ok) {
@@ -48,20 +52,23 @@ export function ReviewSession({ cards }: { cards: Cardio[] }) {
       toast.success(`Növbəti təkrar: ${formatDate(res.data.dueAt)}${res.data.mastered ? " · tam öyrənildi 🎉" : ""}`);
       setDone((d) => d + 1);
       setRevealed(false);
-      if (idx + 1 < cards.length) setIdx((i) => i + 1);
-      else {
+      if (idx + 1 < deck.length) {
+        setIdx((i) => i + 1);
+      } else {
+        setFinished(true);
         toast.success("Bütün kartlar bitdi!");
-        router.refresh();
       }
     });
   }
 
-  if (!card) {
+  if (finished || !card) {
     return (
       <Card>
         <CardContent className="py-12 text-center">
           <p className="font-medium">Sessiya tamamlandı — {done} kart təkrar edildi.</p>
-          <Button className="mt-4" onClick={() => router.refresh()}>Yenilə</Button>
+          <Button className="mt-4" onClick={() => router.refresh()}>
+            Növbəti dəstəni yüklə
+          </Button>
         </CardContent>
       </Card>
     );
@@ -70,14 +77,14 @@ export function ReviewSession({ cards }: { cards: Cardio[] }) {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between text-sm text-muted-foreground">
-        <span>{idx + 1} / {cards.length}</span>
+        <span>{idx + 1} / {deck.length}</span>
         <span>{done} tamamlandı</span>
       </div>
       <div className="h-1.5 rounded-full bg-muted">
-        <div className="h-1.5 rounded-full bg-primary transition-all" style={{ width: `${(idx / cards.length) * 100}%` }} />
+        <div className="h-1.5 rounded-full bg-primary transition-all" style={{ width: `${(idx / deck.length) * 100}%` }} />
       </div>
 
-      <Card className="min-h-[280px]">
+      <Card key={card.id} className="min-h-[280px]">
         <CardContent className="space-y-4 p-6">
           <div className="text-center">
             {card.categoryName && <p className="text-xs text-muted-foreground">{card.categoryName}</p>}

@@ -15,7 +15,10 @@ export async function reviewGradeAction(
     if (!parsed.success) return fail("Qiymət düzgün deyil");
     const { termId, grade, source } = parsed.data;
     const res = await applyReview(user.id, termId, grade, source);
-    revalidatePath("/review");
+    // NOTE: intentionally NOT revalidating "/review" here — the flashcard
+    // session steps through its queue on the client. Revalidating mid-session
+    // would swap the server queue underneath it and make cards flicker/skip.
+    // The page refreshes itself via router.refresh() only when the run ends.
     revalidatePath("/dashboard");
     return ok({ dueAt: res.dueAt.toISOString(), mastered: res.mastered });
   } catch (e) {
