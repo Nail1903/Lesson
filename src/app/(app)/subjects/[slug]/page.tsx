@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { STATUS_LABEL, STATUS_VARIANT } from "@/lib/labels";
 import { AddTopicForm } from "@/components/subjects/add-topic-form";
-import { TopicTermLinker } from "@/components/subjects/topic-term-linker";
+import { TopicTermLinker, RemoveButton } from "@/components/subjects/topic-term-linker";
 
 export default async function SubjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const user = await requireUser();
@@ -62,7 +62,7 @@ export default async function SubjectDetailPage({ params }: { params: Promise<{ 
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <Badge variant={STATUS_VARIANT[tt.term.status]}>{STATUS_LABEL[tt.term.status]}</Badge>
-                    <TopicTermLinker.RemoveButton topicId={topic.id} termId={tt.term.id} />
+                    <RemoveButton topicId={topic.id} termId={tt.term.id} />
                   </div>
                 </div>
               ))}

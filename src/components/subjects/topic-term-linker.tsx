@@ -79,7 +79,7 @@ export function TopicTermLinker({
   );
 }
 
-function RemoveButton({ topicId, termId }: { topicId: string; termId: string }) {
+export function RemoveButton({ topicId, termId }: { topicId: string; termId: string }) {
   const router = useRouter();
   const [pending, start] = React.useTransition();
   return (
@@ -100,5 +100,3 @@ function RemoveButton({ topicId, termId }: { topicId: string; termId: string }) 
     </button>
   );
 }
-
-TopicTermLinker.RemoveButton = RemoveButton;
