@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { QuizBuilder } from "@/components/quiz/quiz-builder";
+import { QuickTestButton } from "@/components/quiz/quick-test-button";
 import { formatDate } from "@/lib/utils";
 
 export const metadata = { title: "Test mərkəzi" };
@@ -36,12 +37,29 @@ export default async function QuizzesPage({
         </p>
       </div>
 
-      <QuizBuilder
-        categories={categories}
-        terms={terms}
-        preselectTermId={sp.termId}
-        preselectCategoryId={sp.categoryId}
-      />
+      <Card className="border-primary/40 bg-accent/30">
+        <CardContent className="flex flex-col items-start gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-medium">Tez başla</p>
+            <p className="text-sm text-muted-foreground">Seçim etmədən — 10 qarışıq sual.</p>
+          </div>
+          <QuickTestButton />
+        </CardContent>
+      </Card>
+
+      <details className="rounded-xl border">
+        <summary className="cursor-pointer select-none px-5 py-3 text-sm font-medium">
+          Öz testini qur (ətraflı)
+        </summary>
+        <div className="border-t p-4">
+          <QuizBuilder
+            categories={categories}
+            terms={terms}
+            preselectTermId={sp.termId}
+            preselectCategoryId={sp.categoryId}
+          />
+        </div>
+      </details>
 
       <Card>
         <CardHeader><CardTitle className="text-base">Keçmiş testlər</CardTitle></CardHeader>

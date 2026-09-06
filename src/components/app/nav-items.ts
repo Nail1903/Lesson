@@ -30,9 +30,9 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/collections", label: "Kolleksiyalar", icon: Boxes, group: "əsas" },
   { href: "/graph", label: "Bilik qrafı", icon: Network, group: "əsas" },
 
-  { href: "/assistant", label: "Bilik köməkçisi", icon: MessageSquareText, group: "öyrənmə" },
+  { href: "/learn", label: "Öyrənmə seansı", icon: Repeat2, group: "öyrənmə" },
   { href: "/quizzes", label: "Test mərkəzi", icon: GraduationCap, group: "öyrənmə" },
-  { href: "/review", label: "Təkrar rejimi", icon: Repeat2, group: "öyrənmə" },
+  { href: "/assistant", label: "Bilik köməkçisi", icon: MessageSquareText, group: "öyrənmə" },
   { href: "/sources", label: "Fayllar və mənbələr", icon: FileText, group: "öyrənmə" },
   { href: "/stats", label: "Statistika", icon: BarChart3, group: "öyrənmə" },
 

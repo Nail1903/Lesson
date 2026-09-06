@@ -2,6 +2,7 @@ import { requireUser } from "@/lib/auth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ImportPanel } from "@/components/data/import-panel";
+import { LessonImportPanel } from "@/components/data/lesson-import-panel";
 import { ReindexButton } from "@/components/data/reindex-button";
 
 export const metadata = { title: "Import / Export" };
@@ -27,11 +28,24 @@ export default async function ImportExportPage() {
         </CardContent>
       </Card>
 
+      <Card className="border-primary/40">
+        <CardHeader>
+          <CardTitle className="text-base">Dərs materialı idxal et</CardTitle>
+          <CardDescription>
+            Bir JSON faylı: fənn + mövzu + terminlər + suallar + flashcard-lar. ChatGPT-yə
+            kitab mətnini verib bu formatda hazırlat, sonra bura yapışdır — hər şey öyrənməyə hazır gəlir.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <LessonImportPanel />
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">İdxal</CardTitle>
+          <CardTitle className="text-base">Sadə termin idxalı</CardTitle>
           <CardDescription>
-            JSON massivi, MyLesson backup faylı və ya CSV mətni. Eyni adlı terminlər ötürülür.
+            Yalnız terminlər — JSON massivi, MyLesson backup faylı və ya CSV mətni. Eyni adlı terminlər ötürülür.
           </CardDescription>
         </CardHeader>
         <CardContent>

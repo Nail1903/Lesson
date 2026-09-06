@@ -12,6 +12,8 @@ export async function getDashboardData(userId: string) {
     addedToday,
     learnedThisWeek,
     dueCount,
+    newCount,
+    weakCount,
     weakTerms,
     recentTerms,
     recentChats,
@@ -28,6 +30,10 @@ export async function getDashboardData(userId: string) {
     }),
     db.term.count({
       where: { userId, deletedAt: null, nextReviewAt: { lte: now } },
+    }),
+    db.term.count({ where: { userId, deletedAt: null, status: "NEW" } }),
+    db.term.count({
+      where: { userId, deletedAt: null, confidence: { lte: 2 }, status: { not: "NEW" } },
     }),
     db.term.findMany({
       where: { userId, deletedAt: null, confidence: { lte: 2 } },
@@ -83,6 +89,8 @@ export async function getDashboardData(userId: string) {
     addedToday,
     learnedThisWeek,
     dueCount,
+    newCount,
+    weakCount,
     weakTerms,
     recentTerms,
     recentChats,

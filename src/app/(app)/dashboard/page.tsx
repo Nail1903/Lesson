@@ -20,38 +20,59 @@ export default async function DashboardPage() {
   const user = await requireUser();
   const d = await getDashboardData(user.id);
 
+  const readyToLearn = d.dueCount + d.newCount;
+
   const stats = [
     { label: "Ümumi termin", value: d.totalTerms, href: "/terms" },
     { label: "Fənn", value: d.totalSubjects, href: "/subjects" },
     { label: "Kateqoriya", value: d.totalCategories, href: "/collections" },
     { label: "Bu gün əlavə olundu", value: d.addedToday, href: "/terms?sort=recent" },
     { label: "Bu həftə öyrənildi", value: d.learnedThisWeek, href: "/terms?status=UNDERSTOOD" },
-    { label: "Təkrar vaxtı çatıb", value: d.dueCount, href: "/review", highlight: d.dueCount > 0 },
+    { label: "Təkrar vaxtı çatıb", value: d.dueCount, href: "/learn", highlight: d.dueCount > 0 },
   ];
 
   const maxStreak = Math.max(1, ...d.streak.map((s) => s.count));
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold">İdarə paneli</h1>
-          <p className="text-sm text-muted-foreground">Öyrənmə dövrünə buradan davam et.</p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button asChild size="sm">
-            <Link href="/terms/new"><Plus className="h-4 w-4" /> Yeni termin</Link>
-          </Button>
-          <Button asChild size="sm" variant="outline">
-            <Link href="/review"><Repeat2 className="h-4 w-4" /> Öyrənməyə davam et</Link>
-          </Button>
-          <Button asChild size="sm" variant="outline">
-            <Link href="/quizzes"><GraduationCap className="h-4 w-4" /> Mənə test hazırla</Link>
-          </Button>
-          <Button asChild size="sm" variant="outline">
-            <Link href="/assistant"><MessageSquareText className="h-4 w-4" /> Qeydlərimə sual ver</Link>
-          </Button>
-        </div>
+      <div>
+        <h1 className="text-2xl font-bold">İdarə paneli</h1>
+        <p className="text-sm text-muted-foreground">Öyrənmə dövrünə buradan davam et.</p>
+      </div>
+
+      {/* Tək, aydın öyrənmə giriş nöqtəsi */}
+      <Card className="border-primary/40 bg-gradient-to-br from-accent/50 to-transparent">
+        <CardContent className="flex flex-col items-start gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm text-muted-foreground">Bu gün öyrənməyə hazır</p>
+            <p className="mt-0.5 text-3xl font-bold tabular-nums">
+              {readyToLearn} <span className="text-base font-normal text-muted-foreground">termin</span>
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {d.dueCount} təkrar · {d.newCount} yeni{d.weakCount ? ` · ${d.weakCount} zəif` : ""}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild size="lg">
+              <Link href="/learn"><Repeat2 className="h-4 w-4" /> {readyToLearn > 0 ? "Öyrənməyə başla" : "Təkrar et"}</Link>
+            </Button>
+            <Button asChild size="lg" variant="outline">
+              <Link href="/quizzes"><GraduationCap className="h-4 w-4" /> Test et</Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="flex flex-wrap gap-2">
+        <Button asChild size="sm" variant="outline">
+          <Link href="/terms/new"><Plus className="h-4 w-4" /> Yeni termin</Link>
+        </Button>
+        <Button asChild size="sm" variant="outline">
+          <Link href="/import-export"><ArrowRight className="h-4 w-4" /> Dərs materialı idxal et</Link>
+        </Button>
+        <Button asChild size="sm" variant="outline">
+          <Link href="/assistant"><MessageSquareText className="h-4 w-4" /> Qeydlərimə sual ver</Link>
+        </Button>
       </div>
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">

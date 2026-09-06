@@ -7,6 +7,8 @@ import { db } from "@/lib/db";
 import { createTerm } from "@/server/services/term-service";
 import { reindexAll } from "@/lib/rag/indexer";
 import { logActivity } from "@/server/services/activity";
+import { lessonPackSchema } from "@/lib/validations/lesson";
+import { importLesson, type LessonImportResult } from "@/server/services/lesson-import";
 import { ok, fail, fromError, type ActionResult } from "@/server/actions/_result";
 
 const importRowSchema = z.object({
@@ -104,6 +106,36 @@ export async function importTermsAction(input: {
     revalidatePath("/terms");
     revalidatePath("/dashboard");
     return ok({ imported, skipped });
+  } catch (e) {
+    return fromError(e);
+  }
+}
+
+/** Import a lesson pack: subject + topic + terms + questions + flashcards from one JSON. */
+export async function importLessonAction(input: {
+  raw: string;
+}): Promise<ActionResult<LessonImportResult>> {
+  try {
+    const user = await requireUser();
+
+    let json: unknown;
+    try {
+      json = JSON.parse(input.raw);
+    } catch {
+      return fail("JSON düzgün deyil (sintaksis xətası)");
+    }
+
+    const parsed = lessonPackSchema.safeParse(json);
+    if (!parsed.success) {
+      const first = parsed.error.errors[0];
+      return fail(`Struktur xətası: ${first?.path.join(".") || "?"} — ${first?.message ?? "yoxlanış uğursuz"}`);
+    }
+
+    const result = await importLesson(user.id, parsed.data);
+    revalidatePath("/terms");
+    revalidatePath("/subjects");
+    revalidatePath("/dashboard");
+    return ok(result);
   } catch (e) {
     return fromError(e);
   }

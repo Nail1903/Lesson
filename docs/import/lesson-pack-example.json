@@ -1,0 +1,92 @@
+{
+  "subject": "Machine Learning Fundamentals",
+  "subjectColor": "#2563eb",
+  "topic": "Nəzarətli öyrənmə əsasları (səh. 2-6)",
+  "topicDescription": "Nəzarətli öyrənmə, təsnifat və reqressiya anlayışları.",
+  "terms": [
+    {
+      "name": "Supervised Learning",
+      "aliases": ["Nəzarətli öyrənmə"],
+      "shortDef": "Modelə həm sual, həm də düzgün cavab nümunələri göstərilir.",
+      "longDef": "Giriş nümunələri ilə onlara uyğun məlum çıxışların birlikdə verildiyi maşın öyrənməsi növüdür. Model $f(x)$ funksiyası ilə $x$ girişini $y$ hədəfinə xəritələməyi öyrənir.\n\n**Nümunə:** Spam və normal kimi işarələnmiş məktublarla model öyrədilir, sonra yeni məktub təsnif edilir.\n\n_Mənbə: Machine Learning with PyTorch and Scikit-Learn (2022), Fəsil 1, səh. 2-6._",
+      "inMyWords": "",
+      "practicalUse": "",
+      "category": "Machine Learning",
+      "tags": ["kitab-fəsil-1", "nəzarətli öyrənmə"],
+      "difficulty": "BEGINNER",
+      "status": "NEW",
+      "confidence": 1,
+      "importance": 5
+    },
+    {
+      "name": "Classification",
+      "aliases": ["Təsnifat"],
+      "shortDef": "Obyekti uyğun qrupa (sinfə) salmaqdır.",
+      "longDef": "Nəzarətli öyrənmənin giriş nümunəsini əvvəlcədən müəyyən edilmiş diskret kateqoriyalardan birinə aid etmə vəzifəsidir.\n\n**Nümunə:** Əməliyyatı 'normal', 'riskli' və ya 'kritik' sinfinə aid etmək təsnifatdır.\n\n_Mənbə: Machine Learning with PyTorch and Scikit-Learn (2022), Fəsil 1, səh. 2-6._",
+      "inMyWords": "",
+      "practicalUse": "",
+      "category": "Machine Learning",
+      "tags": ["kitab-fəsil-1", "təsnifat"],
+      "difficulty": "BEGINNER",
+      "status": "NEW",
+      "confidence": 1,
+      "importance": 5
+    },
+    {
+      "name": "Regression analysis",
+      "aliases": ["Reqressiya təhlili"],
+      "shortDef": "Rəqəmlə ölçülən (davamlı) nəticəni təxmin etməkdir.",
+      "longDef": "Bir və ya bir neçə giriş dəyişəni ilə davamlı ədədi hədəf arasındakı funksional əlaqəni qiymətləndirən nəzarətli öyrənmə yanaşmasıdır.\n\n**Nümunə:** Təhsil saatına görə $0$–$1600$ aralığında SAT balını proqnozlaşdırmaq reqressiyadır.\n\n_Mənbə: Machine Learning with PyTorch and Scikit-Learn (2022), Fəsil 1, səh. 2-6._",
+      "inMyWords": "",
+      "practicalUse": "",
+      "category": "Machine Learning",
+      "tags": ["kitab-fəsil-1", "reqressiya"],
+      "difficulty": "BEGINNER",
+      "status": "NEW",
+      "confidence": 1,
+      "importance": 5
+    }
+  ],
+  "questions": [
+    {
+      "term": "Classification",
+      "type": "MCQ",
+      "prompt": "Aşağıdakılardan hansı təsnifat (classification) məsələsidir?",
+      "choices": [
+        "Sabahkı temperaturu dərəcə ilə proqnozlaşdırmaq",
+        "Məktubu 'spam' və ya 'normal' kimi işarələmək",
+        "Evin qiymətini manatla təxmin etmək",
+        "Qaz sərfini m³ ilə proqnozlaşdırmaq"
+      ],
+      "correctAnswer": "Məktubu 'spam' və ya 'normal' kimi işarələmək",
+      "explanation": "Nəticə diskret sinifdir (spam/normal), rəqəm deyil — bu, təsnifatdır."
+    },
+    {
+      "term": "Regression analysis",
+      "type": "OPEN",
+      "prompt": "Reqressiya ilə təsnifat arasındakı əsas fərq nədir?",
+      "correctAnswer": "Reqressiya davamlı ədədi hədəfi proqnozlaşdırır; təsnifat isə diskret sinif etiketi verir.",
+      "explanation": "Hədəf dəyişənin tipi (davamlı vs diskret) məsələ növünü müəyyən edir."
+    },
+    {
+      "term": "Supervised Learning",
+      "type": "TRUE_FALSE",
+      "prompt": "Nəzarətli öyrənmə etiketsiz məlumatla işləyir.",
+      "choices": ["Doğru", "Yanlış"],
+      "correctAnswer": "Yanlış",
+      "explanation": "Nəzarətli öyrənmə hər nümunə üçün məlum cavab (etiket) tələb edir."
+    }
+  ],
+  "flashcards": [
+    {
+      "term": "Supervised Learning",
+      "front": "Nəzarətli öyrənmədə modelə nə verilir?",
+      "back": "Giriş nümunələri + onlara uyğun düzgün cavablar (etiketlər)."
+    },
+    {
+      "term": "Regression analysis",
+      "front": "Reqressiyanın hədəfi hansı tipdədir?",
+      "back": "Davamlı ədədi qiymət (məs. qiymət, temperatur, bal)."
+    }
+  ]
+}
