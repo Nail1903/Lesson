@@ -47,6 +47,15 @@ export default async function SubjectDetailPage({ params }: { params: Promise<{ 
         </p>
       </div>
 
+      <div className="flex flex-wrap gap-2">
+        <Link
+          href={`/subjects/${subject.slug}/program`}
+          className="inline-flex items-center gap-1.5 rounded-md border px-3 py-2 text-sm hover:bg-muted"
+        >
+          📄 Fənn proqramı və sillabus →
+        </Link>
+      </div>
+
       <Card>
         <CardHeader className="flex-row items-center justify-between pb-3">
           <CardTitle className="text-base">Tədris (semestr və qruplar)</CardTitle>

@@ -48,7 +48,6 @@ export function ReferencePanel({ universities, groups }: { universities: Uni[]; 
   // new-university form
   const [uName, setUName] = React.useState("");
   const [uShort, setUShort] = React.useState("");
-  const [uMin, setUMin] = React.useState("45");
 
   // new-group form
   const [gName, setGName] = React.useState("");
@@ -65,19 +64,18 @@ export function ReferencePanel({ universities, groups }: { universities: Uni[]; 
           onSubmit={(e) => {
             e.preventDefault();
             if (!uName.trim()) return;
-            run(
-              upsertUniversityAction({ name: uName, shortName: uShort, academicHourMinutes: Number(uMin) || 45 }),
-              "Universitet əlavə edildi",
-            );
+            run(upsertUniversityAction({ name: uName, shortName: uShort }), "Universitet əlavə edildi");
             setUName("");
             setUShort("");
           }}
         >
-          <Input className="min-w-[160px] flex-1" placeholder="Ad" value={uName} onChange={(e) => setUName(e.target.value)} />
-          <Input className="w-28" placeholder="Qısa ad" value={uShort} onChange={(e) => setUShort(e.target.value)} />
-          <Input className="w-24" type="number" placeholder="Akad. saat dəq." value={uMin} onChange={(e) => setUMin(e.target.value)} />
+          <Input className="min-w-[180px] flex-1" placeholder="Universitetin adı" value={uName} onChange={(e) => setUName(e.target.value)} />
+          <Input className="w-32" placeholder="Qısa ad (BDU)" value={uShort} onChange={(e) => setUShort(e.target.value)} />
           <Button type="submit" size="icon" disabled={pending}><Plus className="h-4 w-4" /></Button>
         </form>
+        <p className="text-xs text-muted-foreground">
+          Akademik saatın dəqiqəsi hər universitetin öz sətrindən dəyişdirilir (default 45 dəq).
+        </p>
 
         <div className="space-y-2">
           {universities.length === 0 && <p className="text-sm text-muted-foreground">Yoxdur.</p>}
@@ -88,7 +86,7 @@ export function ReferencePanel({ universities, groups }: { universities: Uni[]; 
                   {u.name} {u.shortName && <span className="text-muted-foreground">({u.shortName})</span>}
                 </span>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <span>{u.academicHourMinutes} dəq/saat</span>
+                  <AcademicMinutesField uni={u} onRun={run} />
                   <button
                     onClick={() => run(deleteUniversityAction(u.id), "Silindi")}
                     className="hover:text-destructive"
@@ -123,14 +121,14 @@ export function ReferencePanel({ universities, groups }: { universities: Uni[]; 
             setGCount("");
           }}
         >
-          <Input className="w-32" placeholder="Qrup adı" value={gName} onChange={(e) => setGName(e.target.value)} />
+          <Input className="w-36" placeholder="Qrup adı / kodu" value={gName} onChange={(e) => setGName(e.target.value)} />
           <select className="h-9 rounded-md border border-input bg-background px-2 text-sm" value={gUni} onChange={(e) => setGUni(e.target.value)}>
             <option value="">— universitet —</option>
             {universities.map((u) => (
               <option key={u.id} value={u.id}>{u.shortName || u.name}</option>
             ))}
           </select>
-          <Input className="w-20" type="number" placeholder="Sayı" value={gCount} onChange={(e) => setGCount(e.target.value)} />
+          <Input className="w-28" type="number" placeholder="Tələbə sayı" value={gCount} onChange={(e) => setGCount(e.target.value)} />
           <Button type="submit" size="icon" disabled={pending}><Plus className="h-4 w-4" /></Button>
         </form>
 
@@ -151,6 +149,42 @@ export function ReferencePanel({ universities, groups }: { universities: Uni[]; 
         </div>
       </div>
     </div>
+  );
+}
+
+function AcademicMinutesField({
+  uni,
+  onRun,
+}: {
+  uni: Uni;
+  onRun: (p: Promise<{ ok: boolean; error?: string }>, m: string) => void;
+}) {
+  const [editing, setEditing] = React.useState(false);
+  const [val, setVal] = React.useState(String(uni.academicHourMinutes));
+  if (editing)
+    return (
+      <span className="flex items-center gap-1">
+        <Input
+          className="h-6 w-14 px-1 text-xs"
+          type="number"
+          value={val}
+          autoFocus
+          onChange={(e) => setVal(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              onRun(upsertUniversityAction({ id: uni.id, name: uni.name, shortName: uni.shortName ?? "", academicHourMinutes: Number(val) || 45 }), "Yeniləndi");
+              setEditing(false);
+            }
+            if (e.key === "Escape") setEditing(false);
+          }}
+        />
+        <span>dəq</span>
+      </span>
+    );
+  return (
+    <button className="hover:text-foreground" onClick={() => setEditing(true)} title="Akademik saatın dəqiqəsi">
+      1 akad. saat = {uni.academicHourMinutes} dəq ✎
+    </button>
   );
 }
 
