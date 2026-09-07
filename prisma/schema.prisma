@@ -214,6 +214,8 @@ model User {
   assessmentComponents AssessmentComponent[]
   lessonMeetings       LessonMeeting[]
   meetingTopics        MeetingTopic[]
+  classSlots           ClassSlot[]
+  offeringExceptions   OfferingException[]
   lessonMaterials      LessonMaterial[]
   sourceLinks          SourceLink[]
 
@@ -1019,6 +1021,7 @@ model StudentGroup {
   offeringLinks OfferingGroup[]
   progress      GroupProgress[]
   meetings      LessonMeeting[]
+  slots         ClassSlot[]
 
   createdAt DateTime  @default(now())
   deletedAt DateTime?
@@ -1037,7 +1040,7 @@ model SemesterOffering {
 
   academicYear      String
   term              String
-  language          String  @default("az")
+  language          String    @default("az")
   format            String?
   teacherName       String?
   contactInfo       String?
@@ -1048,15 +1051,19 @@ model SemesterOffering {
   labHours          Int?
   practiceHours     Int?
   selfStudyHours    Int?
-  status            String  @default("draft")
+  status            String    @default("draft")
+  startDate         DateTime?
+  endDate           DateTime?
 
-  subject       Subject         @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-  university    University      @relation(fields: [universityId], references: [id], onDelete: Restrict)
-  faculty       Faculty?        @relation(fields: [facultyId], references: [id], onDelete: SetNull)
-  courseVersion CourseVersion?  @relation(fields: [courseVersionId], references: [id], onDelete: SetNull)
+  subject       Subject             @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  university    University          @relation(fields: [universityId], references: [id], onDelete: Restrict)
+  faculty       Faculty?            @relation(fields: [facultyId], references: [id], onDelete: SetNull)
+  courseVersion CourseVersion?      @relation(fields: [courseVersionId], references: [id], onDelete: SetNull)
   groupLinks    OfferingGroup[]
   meetings      LessonMeeting[]
   progress      GroupProgress[]
+  slots         ClassSlot[]
+  exceptions    OfferingException[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -1202,7 +1209,10 @@ model LessonMeeting {
   userId     String
   offeringId String
   groupId    String
+  slotId     String?
   date       DateTime?
+  startTime  String?
+  endTime    String?
   room       String?
   onlineUrl  String?
   status     String    @default("planned")
@@ -1210,6 +1220,7 @@ model LessonMeeting {
 
   offering SemesterOffering @relation(fields: [offeringId], references: [id], onDelete: Cascade)
   group    StudentGroup     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  slot     ClassSlot?       @relation(fields: [slotId], references: [id], onDelete: SetNull)
   topics   MeetingTopic[]
   user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -1219,6 +1230,47 @@ model LessonMeeting {
   @@index([userId])
   @@index([offeringId, groupId])
   @@index([date])
+}
+
+// Weekly recurring class slot for a group in an offering (day + time range).
+model ClassSlot {
+  id         String  @id @default(cuid())
+  userId     String
+  offeringId String
+  groupId    String
+  weekday    Int // 1 = Monday … 7 = Sunday
+  startTime  String // "09:00"
+  endTime    String // "10:30"
+  kind       String? // mühazirə | seminar | laboratoriya | praktika
+  room       String?
+  onlineUrl  String?
+
+  offering SemesterOffering @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  group    StudentGroup     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  meetings LessonMeeting[]
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([offeringId, groupId])
+}
+
+// Exception / holiday date — meetings are not generated on these dates.
+model OfferingException {
+  id         String   @id @default(cuid())
+  userId     String
+  offeringId String
+  date       DateTime
+  reason     String?
+
+  offering SemesterOffering @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([offeringId, date])
+  @@index([userId])
 }
 
 model MeetingTopic {

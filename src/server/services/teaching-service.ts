@@ -126,8 +126,13 @@ export async function getOffering(userId: string, id: string) {
       ...offeringInclude,
       courseVersion: { select: { id: true, label: true, kind: true, status: true } },
       progress: { include: { lastLesson: { select: { id: true, name: true } } } },
+      slots: {
+        orderBy: [{ weekday: "asc" }, { startTime: "asc" }],
+        include: { group: { select: { id: true, name: true } } },
+      },
+      exceptions: { orderBy: { date: "asc" } },
       meetings: {
-        orderBy: [{ date: "asc" }],
+        orderBy: [{ date: "asc" }, { startTime: "asc" }],
         include: {
           group: { select: { id: true, name: true } },
           topics: { include: { topic: { select: { id: true, name: true } } } },

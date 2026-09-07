@@ -1,27 +1,19 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CalendarDays, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import { requireUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { getOffering, listReferenceData } from "@/server/services/teaching-service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { OfferingDialog } from "@/components/teaching/offering-dialog";
-import { GroupProgressEditor } from "@/components/teaching/group-progress-editor";
+import { GroupProgressRow } from "@/components/teaching/group-progress-row";
 import { DeleteOfferingButton } from "@/components/teaching/delete-offering-button";
 import { CloneOfferingDialog } from "@/components/teaching/clone-offering-dialog";
-import { formatDate } from "@/lib/utils";
+import { OfferingStatusControl } from "@/components/teaching/offering-status-control";
+import { ScheduleEditor } from "@/components/teaching/schedule-editor";
+import { MeetingsPanel } from "@/components/teaching/meetings-panel";
 
 export const metadata = { title: "Tədris planı" };
-
-const STATUS_LABEL: Record<string, string> = { draft: "Qaralama", active: "Aktiv", archived: "Arxiv" };
-const MEETING_LABEL: Record<string, string> = {
-  planned: "planlaşdırılıb",
-  held: "keçirilib",
-  postponed: "təxirə salınıb",
-  cancelled: "ləğv edilib",
-};
 
 export default async function OfferingPage({ params }: { params: Promise<{ offeringId: string }> }) {
   const user = await requireUser();
@@ -40,60 +32,126 @@ export default async function OfferingPage({ params }: { params: Promise<{ offer
   ]);
 
   const progressByGroup = new Map(offering.progress.map((p) => [p.groupId, p]));
-  const hoursTotal =
-    (offering.lectureHours ?? 0) +
-    (offering.seminarHours ?? 0) +
-    (offering.labHours ?? 0) +
-    (offering.practiceHours ?? 0);
+  const offeringGroups = offering.groupLinks.map((l) => ({ id: l.group.id, name: l.group.name }));
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <Link href="/teaching" className="text-xs text-muted-foreground hover:text-foreground">← Tədris</Link>
-          <div className="mt-1 flex flex-wrap items-center gap-2">
+      {/* Header */}
+      <div className="space-y-2">
+        <Link href="/teaching" className="text-xs text-muted-foreground hover:text-foreground">← Tədris</Link>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
             <h1 className="text-2xl font-bold">
               <Link href={`/subjects/${offering.subject.slug}`} className="hover:text-primary">{offering.subject.name}</Link>
             </h1>
-            <Badge variant={offering.status === "active" ? "success" : offering.status === "archived" ? "outline" : "secondary"}>
-              {STATUS_LABEL[offering.status]}
-            </Badge>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {offering.university.name}
+              {offering.faculty ? ` · ${offering.faculty.name}` : ""} · {offering.academicYear} · {offering.term} · {offering.language.toUpperCase()}
+              {offering.teacherName ? ` · ${offering.teacherName}` : ""}
+            </p>
           </div>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {offering.university.name}
-            {offering.faculty ? ` · ${offering.faculty.name}` : ""} · {offering.academicYear} · {offering.term} · {offering.language.toUpperCase()}
-            {offering.teacherName ? ` · ${offering.teacherName}` : ""}
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <OfferingDialog
-            mode="edit"
-            subjects={subjects}
-            universities={universities.map((u) => ({ id: u.id, name: u.name, faculties: u.faculties.map((f) => ({ id: f.id, name: f.name })) }))}
-            groups={groups.map((g) => ({ id: g.id, name: g.name }))}
-            initial={{
-              id: offering.id,
-              subjectId: offering.subject.id,
-              universityId: offering.university.id,
-              facultyId: offering.faculty?.id ?? null,
-              academicYear: offering.academicYear,
-              term: offering.term,
-              language: offering.language,
-              status: offering.status,
-              teacherName: offering.teacherName,
-              groupIds: offering.groupLinks.map((l) => l.group.id),
-            }}
-          />
-          <CloneOfferingDialog
-            offeringId={offering.id}
-            currentGroups={offering.groupLinks.map((l) => ({ id: l.group.id, name: l.group.name }))}
-            hasCourseVersion={!!offering.courseVersion}
-          />
-          <DeleteOfferingButton id={offering.id} />
+          <div className="flex flex-wrap items-center gap-2">
+            <OfferingStatusControl offeringId={offering.id} status={offering.status} />
+            <OfferingDialog
+              mode="edit"
+              subjects={subjects}
+              universities={universities.map((u) => ({ id: u.id, name: u.name, faculties: u.faculties.map((f) => ({ id: f.id, name: f.name })) }))}
+              groups={groups.map((g) => ({ id: g.id, name: g.name }))}
+              initial={{
+                id: offering.id,
+                subjectId: offering.subject.id,
+                universityId: offering.university.id,
+                facultyId: offering.faculty?.id ?? null,
+                academicYear: offering.academicYear,
+                term: offering.term,
+                language: offering.language,
+                status: offering.status,
+                teacherName: offering.teacherName,
+                groupIds: offering.groupLinks.map((l) => l.group.id),
+              }}
+            />
+            <CloneOfferingDialog
+              offeringId={offering.id}
+              currentGroups={offeringGroups}
+              hasCourseVersion={!!offering.courseVersion}
+            />
+            <DeleteOfferingButton id={offering.id} />
+          </div>
         </div>
       </div>
 
-      {(offering.creditHours != null || hoursTotal > 0) && (
+      {/* Weekly schedule */}
+      <ScheduleEditor
+        offeringId={offering.id}
+        startDate={offering.startDate ? offering.startDate.toISOString().slice(0, 10) : null}
+        endDate={offering.endDate ? offering.endDate.toISOString().slice(0, 10) : null}
+        slots={offering.slots.map((s) => ({
+          id: s.id,
+          groupId: s.groupId,
+          weekday: s.weekday,
+          startTime: s.startTime,
+          endTime: s.endTime,
+          kind: s.kind,
+          room: s.room,
+          group: { name: s.group.name },
+        }))}
+        exceptions={offering.exceptions.map((x) => ({ id: x.id, date: x.date.toISOString(), reason: x.reason }))}
+        groups={offeringGroups}
+        meetingsCount={offering.meetings.length}
+      />
+
+      {/* Meetings */}
+      <MeetingsPanel
+        offeringId={offering.id}
+        groups={offeringGroups}
+        lessons={lessons}
+        meetings={offering.meetings.map((m) => ({
+          id: m.id,
+          groupId: m.groupId,
+          groupName: m.group.name,
+          date: m.date ? m.date.toISOString() : null,
+          startTime: m.startTime,
+          endTime: m.endTime,
+          room: m.room,
+          status: m.status,
+          note: m.note,
+          topics: m.topics.map((t) => ({ id: t.topic.id, name: t.topic.name })),
+        }))}
+      />
+
+      {/* Groups & progress (compact) */}
+      <div>
+        <h2 className="mb-2 flex items-center gap-2 text-lg font-semibold">
+          <Users className="h-5 w-5" /> Qruplar və irəliləyiş
+        </h2>
+        {offeringGroups.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Qrup bağlanmayıb — “Redaktə” ilə əlavə edin.</p>
+        ) : (
+          <div className="space-y-2">
+            {offering.groupLinks.map((link) => {
+              const p = progressByGroup.get(link.group.id);
+              return (
+                <GroupProgressRow
+                  key={link.id}
+                  offeringId={offering.id}
+                  groupId={link.group.id}
+                  groupName={link.group.name}
+                  studentCount={link.group.studentCount}
+                  lastLessonName={p?.lastLesson?.name ?? null}
+                  lessons={lessons}
+                  initial={{
+                    lastLessonId: p?.lastLessonId ?? null,
+                    note: p?.note ?? "",
+                    nextStep: p?.nextStep ?? "",
+                  }}
+                />
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {(offering.creditHours != null || (offering.lectureHours ?? 0) > 0) && (
         <Card>
           <CardHeader className="pb-2"><CardTitle className="text-base">Yük</CardTitle></CardHeader>
           <CardContent className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-muted-foreground">
@@ -103,75 +161,9 @@ export default async function OfferingPage({ params }: { params: Promise<{ offer
             {offering.labHours != null && <span>Lab: {offering.labHours}</span>}
             {offering.practiceHours != null && <span>Praktika: {offering.practiceHours}</span>}
             {offering.selfStudyHours != null && <span>Sərbəst iş: {offering.selfStudyHours}</span>}
-            {hoursTotal > 0 && <span className="text-foreground">Auditoriya cəmi: {hoursTotal}</span>}
           </CardContent>
         </Card>
       )}
-
-      <div>
-        <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold">
-          <Users className="h-5 w-5" /> Qruplar və irəliləyiş
-        </h2>
-        {offering.groupLinks.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Bu tədris planına qrup bağlanmayıb — “Redaktə” ilə əlavə edin.</p>
-        ) : (
-          <div className="grid gap-4 md:grid-cols-2">
-            {offering.groupLinks.map((link) => {
-              const p = progressByGroup.get(link.group.id);
-              return (
-                <Card key={link.id}>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-base">{link.group.name}</CardTitle>
-                    <p className="text-xs text-muted-foreground">
-                      {link.group.studentCount != null ? `${link.group.studentCount} tələbə · ` : ""}
-                      {p?.lastLesson ? `son: ${p.lastLesson.name}` : "irəliləyiş qeyd olunmayıb"}
-                    </p>
-                  </CardHeader>
-                  <CardContent>
-                    <GroupProgressEditor
-                      offeringId={offering.id}
-                      groupId={link.group.id}
-                      lessons={lessons}
-                      initial={{
-                        lastLessonId: p?.lastLessonId ?? null,
-                        note: p?.note ?? "",
-                        nextStep: p?.nextStep ?? "",
-                      }}
-                    />
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      <Card>
-        <CardHeader className="flex-row items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <CalendarDays className="h-4 w-4" /> Görüşlər ({offering.meetings.length})
-          </CardTitle>
-          <Badge variant="outline">Təqvim — Mərhələ 3</Badge>
-        </CardHeader>
-        <CardContent className="space-y-2">
-          {offering.meetings.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              Görüşlər (konkret tarixdə keçirilən dərslər) növbəti mərhələdə təqvimlə birlikdə gələcək.
-              Hələlik hər qrupun irəliləyişini yuxarıdakı kartlarda idarə edin.
-            </p>
-          ) : (
-            offering.meetings.map((m) => (
-              <div key={m.id} className="flex items-center justify-between rounded-md border px-3 py-2 text-sm">
-                <span>
-                  {m.date ? formatDate(m.date) : "tarixsiz"} · {m.group.name}
-                  {m.topics.length > 0 && ` — ${m.topics.map((t) => t.topic.name).join(", ")}`}
-                </span>
-                <Badge variant="secondary">{MEETING_LABEL[m.status]}</Badge>
-              </div>
-            ))
-          )}
-        </CardContent>
-      </Card>
     </div>
   );
 }
