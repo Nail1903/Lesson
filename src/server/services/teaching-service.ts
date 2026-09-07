@@ -239,3 +239,64 @@ export async function saveGroupProgress(
     },
   });
 }
+
+/* ── Semestrə köçürmə (spec §12) ─────────────────────────────────────────── */
+
+/**
+ * Clone an offering into a new semester. Content (subject, course version) is
+ * referenced, not copied — but delivery state (meetings, group progress) is
+ * NOT carried over: the new semester starts clean.
+ */
+export async function cloneOfferingToSemester(
+  userId: string,
+  offeringId: string,
+  input: { academicYear: string; term: string; groupIds: string[]; keepCourseVersion: boolean },
+) {
+  const src = await db.semesterOffering.findFirst({
+    where: { id: offeringId, userId, deletedAt: null },
+  });
+  if (!src) throw new Error("NOT_FOUND");
+
+  const ownedGroups = await db.studentGroup.findMany({
+    where: { id: { in: input.groupIds }, userId, deletedAt: null },
+    select: { id: true },
+  });
+
+  const clone = await db.semesterOffering.create({
+    data: {
+      userId,
+      subjectId: src.subjectId,
+      universityId: src.universityId,
+      facultyId: src.facultyId,
+      courseVersionId: input.keepCourseVersion ? src.courseVersionId : null,
+      academicYear: input.academicYear,
+      term: input.term,
+      language: src.language,
+      format: src.format,
+      teacherName: src.teacherName,
+      contactInfo: src.contactInfo,
+      consultationHours: src.consultationHours,
+      creditHours: src.creditHours,
+      lectureHours: src.lectureHours,
+      seminarHours: src.seminarHours,
+      labHours: src.labHours,
+      practiceHours: src.practiceHours,
+      selfStudyHours: src.selfStudyHours,
+      status: "draft",
+    },
+  });
+
+  for (const g of ownedGroups) {
+    await db.offeringGroup.create({ data: { userId, offeringId: clone.id, groupId: g.id } });
+    await db.groupProgress.create({ data: { userId, offeringId: clone.id, groupId: g.id } });
+  }
+
+  await logActivity({
+    userId,
+    type: "offering.cloned",
+    entity: "SemesterOffering",
+    entityId: clone.id,
+    meta: { from: offeringId, term: `${input.academicYear} ${input.term}` },
+  });
+  return { id: clone.id };
+}

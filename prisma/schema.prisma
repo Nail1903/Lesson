@@ -117,6 +117,11 @@ enum QuestionType {
   CODE_OUTPUT
   EXPLAIN_FORMULA
   FLASHCARD
+  MATCHING
+  CALCULATION
+  ESSAY
+  PROJECT
+  PRACTICAL
 }
 
 enum QuizSourceKind {

@@ -77,3 +77,17 @@
 }
 
 /* KaTeX + highlight.js are imported per-component to keep the base bundle small. */
+
+@media print {
+  aside,
+  header {
+    display: none !important;
+  }
+  .md\:pl-64 {
+    padding-left: 0 !important;
+  }
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+}

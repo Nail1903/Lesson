@@ -65,4 +65,15 @@ export const QUESTION_TYPE_LABEL: Record<string, string> = {
   CODE_OUTPUT: "Kodun nəticəsi",
   EXPLAIN_FORMULA: "Formulu izah et",
   FLASHCARD: "Flashcard",
+  MATCHING: "Uyğunlaşdırma",
+  CALCULATION: "Hesablama",
+  ESSAY: "Esse",
+  PROJECT: "Layihə",
+  PRACTICAL: "Praktiki tapşırıq",
+};
+
+export const DIFFICULTY3_LABEL: Record<string, string> = {
+  easy: "Asan",
+  medium: "Orta",
+  hard: "Çətin",
 };

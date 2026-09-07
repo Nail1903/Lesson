@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { OfferingDialog } from "@/components/teaching/offering-dialog";
 import { GroupProgressEditor } from "@/components/teaching/group-progress-editor";
 import { DeleteOfferingButton } from "@/components/teaching/delete-offering-button";
+import { CloneOfferingDialog } from "@/components/teaching/clone-offering-dialog";
 import { formatDate } from "@/lib/utils";
 
 export const metadata = { title: "Tədris planı" };
@@ -82,6 +83,11 @@ export default async function OfferingPage({ params }: { params: Promise<{ offer
               teacherName: offering.teacherName,
               groupIds: offering.groupLinks.map((l) => l.group.id),
             }}
+          />
+          <CloneOfferingDialog
+            offeringId={offering.id}
+            currentGroups={offering.groupLinks.map((l) => ({ id: l.group.id, name: l.group.name }))}
+            hasCourseVersion={!!offering.courseVersion}
           />
           <DeleteOfferingButton id={offering.id} />
         </div>

@@ -8,6 +8,7 @@ import {
   groupSchema,
   offeringSchema,
   groupProgressSchema,
+  cloneOfferingSchema,
 } from "@/lib/validations/teaching";
 import * as svc from "@/server/services/teaching-service";
 import { ok, fail, fromError, type ActionResult } from "@/server/actions/_result";
@@ -129,6 +130,24 @@ export async function saveGroupProgressAction(raw: unknown): Promise<ActionResul
     revalidatePath(`/teaching/${p.data.offeringId}`);
     revalidatePath("/dashboard");
     return ok(undefined);
+  } catch (e) {
+    return fromError(e);
+  }
+}
+
+export async function cloneOfferingAction(raw: unknown): Promise<ActionResult<{ id: string }>> {
+  try {
+    const user = await requireUser();
+    const p = cloneOfferingSchema.safeParse(raw);
+    if (!p.success) return fail("Formada xəta var");
+    const res = await svc.cloneOfferingToSemester(user.id, p.data.offeringId, {
+      academicYear: p.data.academicYear,
+      term: p.data.term,
+      groupIds: p.data.groupIds,
+      keepCourseVersion: p.data.keepCourseVersion,
+    });
+    revalidatePath("/teaching");
+    return ok(res);
   } catch (e) {
     return fromError(e);
   }

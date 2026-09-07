@@ -46,6 +46,14 @@ export const offeringSchema = z.object({
   groupIds: z.array(z.string().cuid()).max(20).default([]),
 });
 
+export const cloneOfferingSchema = z.object({
+  offeringId: z.string().cuid(),
+  academicYear: z.string().trim().regex(/^\d{4}\/\d{4}$/, "Format: 2026/2027"),
+  term: z.enum(["Payız", "Yaz", "Yay"]),
+  groupIds: z.array(z.string().cuid()).max(20).default([]),
+  keepCourseVersion: z.boolean().default(true),
+});
+
 export const groupProgressSchema = z.object({
   offeringId: z.string().cuid(),
   groupId: z.string().cuid(),

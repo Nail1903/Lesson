@@ -25,6 +25,8 @@ export const authConfig = {
         nextUrl.pathname.startsWith("/graph") ||
         nextUrl.pathname.startsWith("/assistant") ||
         nextUrl.pathname.startsWith("/quizzes") ||
+        nextUrl.pathname.startsWith("/question-bank") ||
+        nextUrl.pathname.startsWith("/exams") ||
         nextUrl.pathname.startsWith("/learn") ||
         nextUrl.pathname.startsWith("/review") ||
         nextUrl.pathname.startsWith("/sources") ||
