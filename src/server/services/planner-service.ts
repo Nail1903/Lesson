@@ -111,8 +111,17 @@ export async function upsertWeeklyClass(userId: string, input: WeeklyClassInput)
   }
   if (!subjectId) throw new Error("Fənn seçin və ya yeni ad daxil edin.");
 
-  const owned = await db.subject.findFirst({ where: { id: subjectId, userId, deletedAt: null }, select: { id: true } });
+  const owned = await db.subject.findFirst({
+    where: { id: subjectId, userId, deletedAt: null },
+    select: { id: true, universityId: true },
+  });
   if (!owned) throw new Error("NOT_FOUND");
+
+  // If the chosen subject has no university yet and this class is scheduled at
+  // one, adopt that university so the management panel stays consistent.
+  if (!owned.universityId && input.universityId) {
+    await db.subject.update({ where: { id: subjectId }, data: { universityId: input.universityId } });
+  }
 
   const data = {
     subjectId,

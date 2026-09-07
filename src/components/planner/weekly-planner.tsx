@@ -227,7 +227,17 @@ function AddClassDialog({
   const [room, setRoom] = React.useState(edit?.room ?? "");
   const [pending, start] = React.useTransition();
 
-  const uniSubjects = subjects.filter((s) => (uniId ? s.universityId === uniId : !s.universityId));
+  // Show ALL subjects — university is just an attribute of the class, not a hard
+  // filter. Subjects of the picked university float to the top.
+  const sortedSubjects = React.useMemo(() => {
+    const arr = [...subjects];
+    arr.sort((a, b) => {
+      const aw = a.universityId === uniId ? 0 : a.universityId ? 2 : 1;
+      const bw = b.universityId === uniId ? 0 : b.universityId ? 2 : 1;
+      return aw - bw || a.name.localeCompare(b.name);
+    });
+    return arr;
+  }, [subjects, uniId]);
 
   function save() {
     if (!startTime || !endTime) {
@@ -285,8 +295,16 @@ function AddClassDialog({
               value={subjectId}
               onChange={(e) => setSubjectId(e.target.value)}
             >
-              <option value="">— yeni fənn —</option>
-              {uniSubjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+              <option value="">— yeni fənn yarat —</option>
+              {sortedSubjects.map((s) => {
+                const other = universities.find((x) => x.id === s.universityId && x.id !== uniId);
+                return (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                    {other ? ` — ${other.shortName || other.name}` : ""}
+                  </option>
+                );
+              })}
             </select>
             {!subjectId && (
               <Input
@@ -340,6 +358,7 @@ function UniversitiesManager({
   subjects: Subj[];
   onChange: () => void;
 }) {
+  const allUnis = universities;
   const [pending, start] = React.useTransition();
   const [newUni, setNewUni] = React.useState("");
   const [newUniShort, setNewUniShort] = React.useState("");
@@ -357,6 +376,7 @@ function UniversitiesManager({
           <UniversityCard
             key={u.id}
             uni={u}
+            allUnis={allUnis}
             subjects={subjects.filter((s) => s.universityId === u.id)}
             onRun={run}
             pending={pending}
@@ -365,6 +385,7 @@ function UniversitiesManager({
         {/* general (no university) subjects */}
         <UniversityCard
           uni={null}
+          allUnis={allUnis}
           subjects={subjects.filter((s) => !s.universityId)}
           onRun={run}
           pending={pending}
@@ -393,11 +414,13 @@ function UniversitiesManager({
 
 function UniversityCard({
   uni,
+  allUnis,
   subjects,
   onRun,
   pending,
 }: {
   uni: Uni | null;
+  allUnis: Uni[];
   subjects: Subj[];
   onRun: (p: Promise<{ ok: boolean; error?: string }>, m: string) => void;
   pending: boolean;
@@ -443,9 +466,20 @@ function UniversityCard({
               </button>
             </div>
           ) : (
-            <div key={s.id} className="group flex items-center justify-between rounded px-2 py-1 text-sm hover:bg-muted">
-              <Link href={`/subjects/${s.slug}`} className="hover:text-primary">{s.name}</Link>
-              <span className="flex gap-1 opacity-0 group-hover:opacity-100">
+            <div key={s.id} className="group flex items-center justify-between gap-1 rounded px-2 py-1 text-sm hover:bg-muted">
+              <Link href={`/subjects/${s.slug}`} className="truncate hover:text-primary">{s.name}</Link>
+              <span className="flex shrink-0 items-center gap-1 opacity-0 group-hover:opacity-100">
+                <select
+                  className="h-6 max-w-[90px] rounded border border-input bg-background px-1 text-[11px]"
+                  value={s.universityId ?? ""}
+                  onChange={(e) =>
+                    onRun(upsertPlannerSubjectAction({ id: s.id, name: s.name, universityId: e.target.value || null }), "Köçürüldü")
+                  }
+                  title="Universitetə köçür"
+                >
+                  <option value="">— yox —</option>
+                  {allUnis.map((x) => <option key={x.id} value={x.id}>{x.shortName || x.name}</option>)}
+                </select>
                 <button onClick={() => { setEditId(s.id); setEditName(s.name); }}>
                   <Pencil className="h-3 w-3 text-muted-foreground hover:text-foreground" />
                 </button>
