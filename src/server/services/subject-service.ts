@@ -81,10 +81,45 @@ export async function getSubject(userId: string, idOrSlug: string) {
   });
 }
 
-export async function createSubject(
-  userId: string,
-  input: { name: string; description?: string; color?: string; position?: number },
-) {
+type SubjectMeta = {
+  name?: string;
+  description?: string;
+  color?: string;
+  position?: number;
+  code?: string;
+  faculty?: string;
+  department?: string;
+  specialty?: string;
+  level?: string;
+  courseYear?: number | null;
+  objective?: string;
+  prerequisites?: string;
+  relatedCourses?: string;
+  contentLanguage?: string;
+};
+
+const META_STR_KEYS = [
+  "code",
+  "faculty",
+  "department",
+  "specialty",
+  "objective",
+  "prerequisites",
+  "relatedCourses",
+] as const;
+
+function metaData(input: SubjectMeta) {
+  const data: Record<string, unknown> = {};
+  for (const k of META_STR_KEYS) {
+    if (input[k] !== undefined) data[k] = (input[k] as string)?.trim() || null;
+  }
+  if (input.level !== undefined) data.level = input.level || null;
+  if (input.courseYear !== undefined) data.courseYear = input.courseYear ?? null;
+  if (input.contentLanguage !== undefined) data.contentLanguage = input.contentLanguage || "az";
+  return data;
+}
+
+export async function createSubject(userId: string, input: SubjectMeta & { name: string }) {
   return db.subject.create({
     data: {
       userId,
@@ -93,15 +128,12 @@ export async function createSubject(
       description: input.description?.trim() || null,
       color: input.color || null,
       position: input.position ?? 0,
+      ...metaData(input),
     },
   });
 }
 
-export async function updateSubject(
-  userId: string,
-  id: string,
-  input: { name?: string; description?: string; color?: string; position?: number },
-) {
+export async function updateSubject(userId: string, id: string, input: SubjectMeta) {
   const existing = await db.subject.findFirst({ where: { id, userId, deletedAt: null } });
   if (!existing) throw new Error("NOT_FOUND");
   return db.subject.update({
@@ -113,6 +145,7 @@ export async function updateSubject(
       ...(input.description !== undefined ? { description: input.description.trim() || null } : {}),
       ...(input.color !== undefined ? { color: input.color || null } : {}),
       ...(input.position !== undefined ? { position: input.position } : {}),
+      ...metaData(input),
     },
   });
 }
@@ -177,4 +210,76 @@ export async function deleteTopic(userId: string, id: string) {
     data: { deletedAt: new Date() },
   });
   return r.count > 0;
+}
+
+export interface SubjectOverviewGap {
+  level: "warn" | "info";
+  message: string;
+  href?: string;
+}
+
+/** "Ümumi baxış" — content gaps & unfinished preparation (spec §3). */
+export async function getSubjectOverview(userId: string, subjectId: string, subjectSlug: string) {
+  const [
+    lessonsDraft,
+    lessonsNeedUpdate,
+    lessonsNoOutcome,
+    lessonsTotal,
+    publishedVersions,
+    draftVersions,
+    courseOutcomes,
+    outcomesNoQuestion,
+    termsNoLesson,
+    activeOfferings,
+  ] = await Promise.all([
+    db.topic.count({ where: { userId, subjectId, deletedAt: null, prepStatus: "draft" } }),
+    db.topic.count({ where: { userId, subjectId, deletedAt: null, prepStatus: "needs_update" } }),
+    db.topic.count({ where: { userId, subjectId, deletedAt: null, outcomes: { none: { kind: "lesson" } } } }),
+    db.topic.count({ where: { userId, subjectId, deletedAt: null } }),
+    db.courseVersion.count({ where: { userId, subjectId, deletedAt: null, status: "published" } }),
+    db.courseVersion.count({ where: { userId, subjectId, deletedAt: null, status: "draft" } }),
+    db.learningOutcome.count({ where: { userId, subjectId, kind: "course" } }),
+    db.learningOutcome.count({
+      where: { userId, subjectId, kind: "course", questions: { none: {} } },
+    }),
+    db.term.count({
+      where: { userId, deletedAt: null, subjects: { some: { id: subjectId } }, topicLinks: { none: {} } },
+    }),
+    db.semesterOffering.count({ where: { userId, subjectId, deletedAt: null, status: "active" } }),
+  ]);
+
+  const gaps: SubjectOverviewGap[] = [];
+  if (lessonsDraft > 0)
+    gaps.push({ level: "warn", message: `${lessonsDraft} dərs hələ qaralama statusundadır.` });
+  if (lessonsNeedUpdate > 0)
+    gaps.push({ level: "warn", message: `${lessonsNeedUpdate} dərs "yenilənməlidir" işarələnib.` });
+  if (lessonsTotal > 0 && lessonsNoOutcome > 0)
+    gaps.push({ level: "warn", message: `${lessonsNoOutcome} dərsdə öyrənmə nəticəsi yoxdur.` });
+  if (outcomesNoQuestion > 0)
+    gaps.push({
+      level: "warn",
+      message: `Qiymətləndirmə (sual) ilə əlaqələndirilməmiş ${outcomesNoQuestion} öyrənmə nəticəsi var.`,
+      href: `/subjects/${subjectSlug}/program`,
+    });
+  if (courseOutcomes === 0)
+    gaps.push({
+      level: "info",
+      message: "Fənn səviyyəsində öyrənmə nəticəsi əlavə edilməyib.",
+      href: `/subjects/${subjectSlug}/program`,
+    });
+  if (publishedVersions === 0)
+    gaps.push({
+      level: "info",
+      message: draftVersions > 0 ? "Proqram/sillabus qaralamadır, dərc edilməyib." : "Fənn proqramı hələ yaradılmayıb.",
+      href: `/subjects/${subjectSlug}/program`,
+    });
+  if (termsNoLesson > 0)
+    gaps.push({ level: "info", message: `${termsNoLesson} termin heç bir dərsə bağlı deyil.` });
+  if (activeOfferings === 0)
+    gaps.push({ level: "info", message: "Aktiv tədris planı yoxdur.", href: "/teaching" });
+
+  return {
+    gaps,
+    stats: { lessonsTotal, lessonsDraft, publishedVersions, courseOutcomes, activeOfferings },
+  };
 }

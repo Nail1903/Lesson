@@ -49,7 +49,22 @@ export default async function SubjectsPage() {
                 </div>
                 <SubjectDialog
                   mode="edit"
-                  subject={{ id: s.id, name: s.name, description: s.description ?? "", color: s.color ?? "" }}
+                  subject={{
+                    id: s.id,
+                    name: s.name,
+                    description: s.description ?? "",
+                    color: s.color ?? "",
+                    code: s.code,
+                    faculty: s.faculty,
+                    department: s.department,
+                    specialty: s.specialty,
+                    level: s.level,
+                    courseYear: s.courseYear,
+                    objective: s.objective,
+                    prerequisites: s.prerequisites,
+                    relatedCourses: s.relatedCourses,
+                    contentLanguage: s.contentLanguage,
+                  }}
                 />
               </CardHeader>
               <CardContent className="space-y-1">

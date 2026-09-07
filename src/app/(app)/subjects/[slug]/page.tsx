@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { getSubject } from "@/server/services/subject-service";
+import { AlertTriangle, Info } from "lucide-react";
+import { getSubject, getSubjectOverview } from "@/server/services/subject-service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { STATUS_LABEL, STATUS_VARIANT } from "@/lib/labels";
@@ -16,7 +17,7 @@ export default async function SubjectDetailPage({ params }: { params: Promise<{ 
   const subject = await getSubject(user.id, slug);
   if (!subject) notFound();
 
-  const [allTerms, offerings] = await Promise.all([
+  const [allTerms, offerings, overview] = await Promise.all([
     db.term.findMany({
       where: { userId: user.id, deletedAt: null },
       select: { id: true, name: true },
@@ -30,6 +31,7 @@ export default async function SubjectDetailPage({ params }: { params: Promise<{ 
         _count: { select: { groupLinks: true } },
       },
     }),
+    getSubjectOverview(user.id, subject.id, subject.slug),
   ]);
 
   const OFF_STATUS: Record<string, string> = { draft: "Qaralama", active: "Aktiv", archived: "Arxiv" };
@@ -42,10 +44,49 @@ export default async function SubjectDetailPage({ params }: { params: Promise<{ 
           <h1 className="text-2xl font-bold">{subject.name}</h1>
         </div>
         {subject.description && <p className="mt-1 text-sm text-muted-foreground">{subject.description}</p>}
-        <p className="mt-1 text-xs text-muted-foreground">
-          {subject.topics.length} mövzu · {subject.terms.length} termin
+        <p className="mt-1 flex flex-wrap gap-x-2 text-xs text-muted-foreground">
+          {subject.code && <span>Kod: {subject.code}</span>}
+          {subject.faculty && <span>· {subject.faculty}</span>}
+          {subject.level && <span>· {subject.level}</span>}
+          {subject.courseYear && <span>· {subject.courseYear}-ci kurs</span>}
+          <span>· {subject.topics.length} mövzu · {subject.terms.length} termin</span>
         </p>
       </div>
+
+      {/* Ümumi baxış — məzmun boşluqları və hazırlıq işləri */}
+      <Card className={overview.gaps.some((g) => g.level === "warn") ? "border-amber-500/40" : ""}>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">Ümumi baxış</CardTitle>
+          <p className="text-xs text-muted-foreground">
+            {overview.stats.lessonsTotal} dərs · {overview.stats.publishedVersions} dərc edilmiş proqram ·{" "}
+            {overview.stats.courseOutcomes} fənn nəticəsi · {overview.stats.activeOfferings} aktiv tədris
+          </p>
+        </CardHeader>
+        <CardContent className="space-y-1.5">
+          {overview.gaps.length === 0 ? (
+            <p className="text-sm text-emerald-600">✓ Bariz boşluq görünmür.</p>
+          ) : (
+            overview.gaps.map((g, i) => {
+              const Icon = g.level === "warn" ? AlertTriangle : Info;
+              const inner = (
+                <span className="flex items-start gap-1.5">
+                  <Icon className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${g.level === "warn" ? "text-amber-600" : "text-muted-foreground"}`} />
+                  {g.message}
+                </span>
+              );
+              return (
+                <div key={i} className="text-sm">
+                  {g.href ? (
+                    <Link href={g.href} className="hover:underline">{inner}</Link>
+                  ) : (
+                    inner
+                  )}
+                </div>
+              );
+            })
+          )}
+        </CardContent>
+      </Card>
 
       <div className="flex flex-wrap gap-2">
         <Link

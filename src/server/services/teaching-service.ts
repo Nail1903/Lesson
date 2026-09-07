@@ -35,6 +35,15 @@ export async function upsertUniversity(userId: string, input: UniversityInput) {
     if (!owned) throw new Error("NOT_FOUND");
     return db.university.update({ where: { id: input.id }, data });
   }
+  // `@@unique([userId, name])` survives a soft delete — if a row with this name
+  // already exists (active or in the trash), reuse/restore it instead of failing.
+  const existing = await db.university.findFirst({
+    where: { userId, name: input.name },
+    select: { id: true },
+  });
+  if (existing) {
+    return db.university.update({ where: { id: existing.id }, data: { ...data, deletedAt: null } });
+  }
   return db.university.create({ data: { ...data, userId } });
 }
 
