@@ -18,6 +18,7 @@ export const authConfig = {
       const isAppRoute =
         nextUrl.pathname.startsWith("/dashboard") ||
         nextUrl.pathname.startsWith("/teaching") ||
+        nextUrl.pathname.startsWith("/lessons") ||
         nextUrl.pathname.startsWith("/terms") ||
         nextUrl.pathname.startsWith("/categories") ||
         nextUrl.pathname.startsWith("/collections") ||

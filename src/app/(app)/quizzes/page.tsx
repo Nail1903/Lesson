@@ -12,10 +12,19 @@ export const metadata = { title: "Test mərkəzi" };
 export default async function QuizzesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ termId?: string; categoryId?: string }>;
+  searchParams: Promise<{ termId?: string; categoryId?: string; topicId?: string }>;
 }) {
   const user = await requireUser();
   const sp = await searchParams;
+
+  const topicTermIds = sp.topicId
+    ? (
+        await db.topicTerm.findMany({
+          where: { topicId: sp.topicId, userId: user.id },
+          select: { termId: true },
+        })
+      ).map((t) => t.termId)
+    : undefined;
 
   const [categories, terms, pastQuizzes] = await Promise.all([
     db.category.findMany({ where: { userId: user.id, deletedAt: null }, select: { id: true, name: true }, orderBy: { name: "asc" } }),
@@ -56,6 +65,7 @@ export default async function QuizzesPage({
             categories={categories}
             terms={terms}
             preselectTermId={sp.termId}
+            preselectTermIds={topicTermIds}
             preselectCategoryId={sp.categoryId}
           />
         </div>

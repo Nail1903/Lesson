@@ -25,21 +25,28 @@ export function QuizBuilder({
   categories,
   terms,
   preselectTermId,
+  preselectTermIds,
   preselectCategoryId,
 }: {
   categories: { id: string; name: string }[];
   terms: { id: string; name: string }[];
   preselectTermId?: string;
+  preselectTermIds?: string[];
   preselectCategoryId?: string;
 }) {
   const router = useRouter();
+  const seedTermIds = preselectTermIds?.length
+    ? preselectTermIds
+    : preselectTermId
+      ? [preselectTermId]
+      : [];
   const [source, setSource] = React.useState<(typeof SOURCES)[number]["key"]>(
-    preselectTermId ? "TERMS" : preselectCategoryId ? "CATEGORY" : "RANDOM",
+    seedTermIds.length ? "TERMS" : preselectCategoryId ? "CATEGORY" : "RANDOM",
   );
   const [size, setSize] = React.useState(8);
   const [types, setTypes] = React.useState<string[]>(["OPEN", "MCQ", "TRUE_FALSE"]);
   const [categoryIds, setCategoryIds] = React.useState<string[]>(preselectCategoryId ? [preselectCategoryId] : []);
-  const [termIds, setTermIds] = React.useState<string[]>(preselectTermId ? [preselectTermId] : []);
+  const [termIds, setTermIds] = React.useState<string[]>(seedTermIds);
   const [pending, start] = React.useTransition();
 
   function toggle<T>(list: T[], v: T, set: (x: T[]) => void) {

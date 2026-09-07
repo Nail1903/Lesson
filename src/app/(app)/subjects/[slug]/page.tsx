@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { STATUS_LABEL, STATUS_VARIANT } from "@/lib/labels";
 import { AddTopicForm } from "@/components/subjects/add-topic-form";
+import { BulkLessonsForm } from "@/components/subjects/bulk-lessons-form";
 import { TopicTermLinker, RemoveButton } from "@/components/subjects/topic-term-linker";
 
 export default async function SubjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -74,19 +75,27 @@ export default async function SubjectDetailPage({ params }: { params: Promise<{ 
         </CardContent>
       </Card>
 
-      <AddTopicForm subjectId={subject.id} />
+      <div className="flex flex-wrap items-center gap-3">
+        <AddTopicForm subjectId={subject.id} />
+        <BulkLessonsForm subjectId={subject.id} />
+      </div>
 
       <div className="space-y-4">
         {subject.topics.map((topic) => (
           <Card key={topic.id} id={topic.slug}>
             <CardHeader className="flex-row items-start justify-between">
               <div>
-                <CardTitle className="text-base">{topic.name}</CardTitle>
+                <CardTitle className="text-base">
+                  <Link href={`/lessons/${topic.id}`} className="hover:text-primary">{topic.name}</Link>
+                </CardTitle>
                 {topic.description && (
                   <p className="mt-1 text-sm text-muted-foreground">{topic.description}</p>
                 )}
               </div>
-              <Badge variant="secondary">{topic.terms.length} termin</Badge>
+              <div className="flex shrink-0 items-center gap-2">
+                <Badge variant="secondary">{topic.terms.length} termin</Badge>
+                <Link href={`/lessons/${topic.id}`} className="text-xs text-primary underline">Dərs səhifəsi</Link>
+              </div>
             </CardHeader>
             <CardContent className="space-y-2">
               {topic.terms.map((tt) => (
