@@ -8,7 +8,8 @@ import { cn } from "@/lib/utils";
 import { NAV_ITEMS } from "@/components/app/nav-items";
 import { Button } from "@/components/ui/button";
 
-const GROUPS = ["əsas", "öyrənmə", "sistem"] as const;
+const GROUPS = ["planlama", "şəxsi"] as const;
+const GROUP_LABEL: Record<string, string> = { planlama: "Dərs planlama", şəxsi: "Şəxsi" };
 
 export function Sidebar() {
   const pathname = usePathname();

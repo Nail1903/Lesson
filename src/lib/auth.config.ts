@@ -17,6 +17,7 @@ export const authConfig = {
       const isLoggedIn = !!auth?.user;
       const isAppRoute =
         nextUrl.pathname.startsWith("/dashboard") ||
+        nextUrl.pathname.startsWith("/schedule") ||
         nextUrl.pathname.startsWith("/teaching") ||
         nextUrl.pathname.startsWith("/lessons") ||
         nextUrl.pathname.startsWith("/terms") ||

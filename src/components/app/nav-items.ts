@@ -1,19 +1,11 @@
 import {
   LayoutDashboard,
-  Library,
+  CalendarDays,
   FolderTree,
-  Boxes,
-  GraduationCap as SchoolIcon,
-  Network,
-  MessageSquareText,
-  GraduationCap,
+  FileStack,
   Repeat2,
-  FileText,
-  BarChart3,
-  History,
+  MessageSquareText,
   Settings,
-  ArrowLeftRight,
-  Trash2,
   type LucideIcon,
 } from "lucide-react";
 
@@ -21,26 +13,36 @@ export interface NavItem {
   href: string;
   label: string;
   icon: LucideIcon;
-  group: "əsas" | "öyrənmə" | "sistem";
+  group: "planlama" | "şəxsi";
 }
 
+/**
+ * The app is a teacher's lesson-planning workspace. Primary flow: weekly
+ * planner → subject content (lessons, terms). Term-learning is a personal side
+ * feature. Advanced pages live under Parametrlər.
+ */
 export const NAV_ITEMS: NavItem[] = [
-  { href: "/dashboard", label: "İdarə paneli", icon: LayoutDashboard, group: "əsas" },
-  { href: "/teaching", label: "Tədris (semestr, qruplar)", icon: SchoolIcon, group: "əsas" },
-  { href: "/subjects", label: "Fənnlər və mövzular", icon: FolderTree, group: "əsas" },
-  { href: "/terms", label: "Bütün terminlər", icon: Library, group: "əsas" },
-  { href: "/collections", label: "Kolleksiyalar", icon: Boxes, group: "əsas" },
-  { href: "/graph", label: "Bilik qrafı", icon: Network, group: "əsas" },
+  { href: "/dashboard", label: "İdarə paneli", icon: LayoutDashboard, group: "planlama" },
+  { href: "/schedule", label: "Tədris Planlayıcısı", icon: CalendarDays, group: "planlama" },
+  { href: "/subjects", label: "Fənnlər və dərslər", icon: FolderTree, group: "planlama" },
+  { href: "/question-bank", label: "Sual bankı", icon: FileStack, group: "planlama" },
 
-  { href: "/learn", label: "Öyrənmə seansı", icon: Repeat2, group: "öyrənmə" },
-  { href: "/quizzes", label: "Test mərkəzi", icon: GraduationCap, group: "öyrənmə" },
-  { href: "/question-bank", label: "Sual bankı", icon: FileText, group: "öyrənmə" },
-  { href: "/assistant", label: "Bilik köməkçisi", icon: MessageSquareText, group: "öyrənmə" },
-  { href: "/sources", label: "Fayllar və mənbələr", icon: FileText, group: "öyrənmə" },
-  { href: "/stats", label: "Statistika", icon: BarChart3, group: "öyrənmə" },
+  { href: "/learn", label: "Öyrənmə seansı", icon: Repeat2, group: "şəxsi" },
+  { href: "/assistant", label: "Bilik köməkçisi", icon: MessageSquareText, group: "şəxsi" },
 
-  { href: "/history", label: "Sual-cavab tarixçəsi", icon: History, group: "sistem" },
-  { href: "/import-export", label: "Import / Export", icon: ArrowLeftRight, group: "sistem" },
-  { href: "/trash", label: "Səbət", icon: Trash2, group: "sistem" },
-  { href: "/settings", label: "Profil və parametrlər", icon: Settings, group: "sistem" },
+  { href: "/settings", label: "Parametrlər", icon: Settings, group: "şəxsi" },
+];
+
+/** Reachable but not in the sidebar — surfaced from Parametrlər and in-context. */
+export const SECONDARY_LINKS: { href: string; label: string }[] = [
+  { href: "/teaching", label: "Semestr / qrup idarəetməsi (ətraflı)" },
+  { href: "/terms", label: "Bütün terminlər" },
+  { href: "/quizzes", label: "Test mərkəzi" },
+  { href: "/graph", label: "Bilik qrafı" },
+  { href: "/collections", label: "Kolleksiyalar" },
+  { href: "/sources", label: "Fayllar və mənbələr" },
+  { href: "/stats", label: "Statistika" },
+  { href: "/history", label: "Sual-cavab tarixçəsi" },
+  { href: "/import-export", label: "Import / Export" },
+  { href: "/trash", label: "Səbət" },
 ];

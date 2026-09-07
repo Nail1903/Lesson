@@ -218,6 +218,7 @@ model User {
   offeringExceptions   OfferingException[]
   lessonMaterials      LessonMaterial[]
   sourceLinks          SourceLink[]
+  weeklyClasses        WeeklyClass[]
 
   @@index([email])
 }
@@ -362,12 +363,17 @@ model Subject {
   relatedCourses  String?
   contentLanguage String  @default("az")
 
+  // simple planner: which university this subject entry is taught at (optional)
+  universityId String?
+
   topics Topic[]
   terms  Term[]  @relation("SubjectTerms")
 
+  university     University?        @relation(fields: [universityId], references: [id], onDelete: SetNull)
   offerings      SemesterOffering[]
   courseVersions CourseVersion[]
   outcomes       LearningOutcome[]
+  weeklyClasses  WeeklyClass[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -377,6 +383,33 @@ model Subject {
 
   @@unique([userId, slug])
   @@index([userId])
+  @@index([userId, universityId])
+}
+
+// Simple weekly timetable entry — the core of the lesson planner. One recurring
+// class: a subject taught on a weekday at a time, for a group, in a room.
+model WeeklyClass {
+  id           String  @id @default(cuid())
+  userId       String
+  subjectId    String
+  universityId String?
+  weekday      Int // 1 = Monday … 7 = Sunday
+  startTime    String // "09:00"
+  endTime      String // "10:30"
+  groupLabel   String?
+  room         String?
+  color        String?
+  position     Int     @default(0)
+
+  subject    Subject     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  university University? @relation(fields: [universityId], references: [id], onDelete: SetNull)
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, weekday])
 }
 
 // A lesson within a subject ("Dərs" / "Mövzu"). Its delivery on a concrete date
@@ -976,10 +1009,13 @@ model University {
   city                String?
   academicHourMinutes Int     @default(45)
   syllabusTemplate    Json?
+  logoEmoji           String?
 
-  faculties Faculty[]
-  groups    StudentGroup[]
-  offerings SemesterOffering[]
+  faculties     Faculty[]
+  groups        StudentGroup[]
+  offerings     SemesterOffering[]
+  subjects      Subject[]
+  weeklyClasses WeeklyClass[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

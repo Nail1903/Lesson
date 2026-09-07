@@ -1,9 +1,11 @@
+import Link from "next/link";
 import { requireUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { env } from "@/env";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SettingsForm } from "@/components/settings/settings-form";
 import { DangerZone } from "@/components/settings/danger-zone";
+import { SECONDARY_LINKS } from "@/components/app/nav-items";
 
 export const metadata = { title: "Profil və parametrlər" };
 
@@ -46,6 +48,20 @@ export default async function SettingsPage() {
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground">
           Bütün AI sorğuları yalnız serverdə icra olunur; API açarları brauzerə göndərilmir.
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Ətraflı bölmələr</CardTitle>
+          <CardDescription>Naviqasiyadan çıxarılıb — burada əlçatandır.</CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-1.5 sm:grid-cols-2">
+          {SECONDARY_LINKS.map((l) => (
+            <Link key={l.href} href={l.href} className="rounded-md border px-3 py-2 text-sm hover:bg-muted">
+              {l.label}
+            </Link>
+          ))}
         </CardContent>
       </Card>
 
