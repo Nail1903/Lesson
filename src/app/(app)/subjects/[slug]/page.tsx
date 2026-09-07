@@ -15,11 +15,23 @@ export default async function SubjectDetailPage({ params }: { params: Promise<{ 
   const subject = await getSubject(user.id, slug);
   if (!subject) notFound();
 
-  const allTerms = await db.term.findMany({
-    where: { userId: user.id, deletedAt: null },
-    select: { id: true, name: true },
-    orderBy: { name: "asc" },
-  });
+  const [allTerms, offerings] = await Promise.all([
+    db.term.findMany({
+      where: { userId: user.id, deletedAt: null },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
+    db.semesterOffering.findMany({
+      where: { userId: user.id, subjectId: subject.id, deletedAt: null },
+      orderBy: [{ academicYear: "desc" }, { term: "asc" }],
+      include: {
+        university: { select: { name: true, shortName: true } },
+        _count: { select: { groupLinks: true } },
+      },
+    }),
+  ]);
+
+  const OFF_STATUS: Record<string, string> = { draft: "Qaralama", active: "Aktiv", archived: "Arxiv" };
 
   return (
     <div className="space-y-6">
@@ -33,6 +45,34 @@ export default async function SubjectDetailPage({ params }: { params: Promise<{ 
           {subject.topics.length} mövzu · {subject.terms.length} termin
         </p>
       </div>
+
+      <Card>
+        <CardHeader className="flex-row items-center justify-between pb-3">
+          <CardTitle className="text-base">Tədris (semestr və qruplar)</CardTitle>
+          <Link href="/teaching" className="text-xs text-primary underline">Tədris bölməsi →</Link>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {offerings.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Bu fənn hələ bir semestrə/universitetə bağlanmayıb. “Tədris” bölməsindən tədris planı yaradın.
+            </p>
+          ) : (
+            offerings.map((o) => (
+              <Link
+                key={o.id}
+                href={`/teaching/${o.id}`}
+                className="flex items-center justify-between rounded-md border px-3 py-2 text-sm hover:bg-muted"
+              >
+                <span>
+                  {o.university.shortName || o.university.name} · {o.academicYear} · {o.term}
+                  <span className="ml-2 text-xs text-muted-foreground">{o._count.groupLinks} qrup</span>
+                </span>
+                <Badge variant={o.status === "active" ? "success" : "secondary"}>{OFF_STATUS[o.status]}</Badge>
+              </Link>
+            ))
+          )}
+        </CardContent>
+      </Card>
 
       <AddTopicForm subjectId={subject.id} />
 

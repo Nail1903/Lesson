@@ -3,6 +3,7 @@ import {
   Library,
   FolderTree,
   Boxes,
+  GraduationCap as SchoolIcon,
   Network,
   MessageSquareText,
   GraduationCap,
@@ -25,8 +26,9 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "İdarə paneli", icon: LayoutDashboard, group: "əsas" },
-  { href: "/terms", label: "Bütün terminlər", icon: Library, group: "əsas" },
+  { href: "/teaching", label: "Tədris (semestr, qruplar)", icon: SchoolIcon, group: "əsas" },
   { href: "/subjects", label: "Fənnlər və mövzular", icon: FolderTree, group: "əsas" },
+  { href: "/terms", label: "Bütün terminlər", icon: Library, group: "əsas" },
   { href: "/collections", label: "Kolleksiyalar", icon: Boxes, group: "əsas" },
   { href: "/graph", label: "Bilik qrafı", icon: Network, group: "əsas" },
 

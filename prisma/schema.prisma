@@ -163,38 +163,54 @@ model User {
   isDemo        Boolean   @default(false)
 
   // preferences
-  aiProvider    String?   // per-user override of AI_PROVIDER
-  theme         String    @default("system")
-  locale        String    @default("az")
+  aiProvider String? // per-user override of AI_PROVIDER
+  theme      String  @default("system")
+  locale     String  @default("az")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  accounts            Account[]
-  sessions            Session[]
-  terms               Term[]
-  categories          Category[]
-  collections         Collection[]
-  subjects            Subject[]
-  topics              Topic[]
-  topicTerms          TopicTerm[]
-  tags                Tag[]
-  relations           TermRelation[]
-  notes               Note[]
-  examples            Example[]
-  codeExamples        CodeExample[]
-  formulas            Formula[]
-  sources             Source[]
-  attachments         Attachment[]
-  embeddings          Embedding[]
-  chats               Chat[]
-  quizzes             Quiz[]
-  questions           Question[]
-  answers             Answer[]
-  reviews             Review[]
-  learningProgress    LearningProgress[]
-  activities          UserActivity[]
-  suggestions         AIContentSuggestion[]
+  accounts         Account[]
+  sessions         Session[]
+  terms            Term[]
+  categories       Category[]
+  collections      Collection[]
+  subjects         Subject[]
+  topics           Topic[]
+  topicTerms       TopicTerm[]
+  tags             Tag[]
+  relations        TermRelation[]
+  notes            Note[]
+  examples         Example[]
+  codeExamples     CodeExample[]
+  formulas         Formula[]
+  sources          Source[]
+  attachments      Attachment[]
+  embeddings       Embedding[]
+  chats            Chat[]
+  quizzes          Quiz[]
+  questions        Question[]
+  answers          Answer[]
+  reviews          Review[]
+  learningProgress LearningProgress[]
+  activities       UserActivity[]
+  suggestions      AIContentSuggestion[]
+
+  // ── Teaching workspace (course management) ──
+  universities         University[]
+  faculties            Faculty[]
+  studentGroups        StudentGroup[]
+  offerings            SemesterOffering[]
+  offeringGroups       OfferingGroup[]
+  groupProgress        GroupProgress[]
+  courseVersions       CourseVersion[]
+  syllabusSections     SyllabusSection[]
+  learningOutcomes     LearningOutcome[]
+  assessmentComponents AssessmentComponent[]
+  lessonMeetings       LessonMeeting[]
+  meetingTopics        MeetingTopic[]
+  lessonMaterials      LessonMaterial[]
+  sourceLinks          SourceLink[]
 
   @@index([email])
 }
@@ -252,7 +268,7 @@ model Category {
   name        String
   slug        String
   description String?
-  color       String?    // hex, for the graph + badges
+  color       String? // hex, for the graph + badges
   icon        String?
   parentId    String?
   parent      Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
@@ -314,6 +330,9 @@ model Tag {
 // Terms stay canonical — a term reachable from many subjects/topics is still ONE
 // row with ONE detail page at /terms/[slug].
 
+// "Fənn" — reusable course catalogue entry. The teaching of it in a given
+// semester lives in SemesterOffering; the published program/syllabus documents
+// live in CourseVersion.
 model Subject {
   id          String  @id @default(cuid())
   userId      String
@@ -324,8 +343,24 @@ model Subject {
   icon        String?
   position    Int     @default(0)
 
+  // course catalogue metadata (all optional — draft may hold only a name)
+  code            String?
+  faculty         String?
+  department      String?
+  specialty       String?
+  level           String? // təhsil pilləsi
+  courseYear      Int? // kurs
+  objective       String? @db.Text
+  prerequisites   String? @db.Text
+  relatedCourses  String?
+  contentLanguage String  @default("az")
+
   topics Topic[]
   terms  Term[]  @relation("SubjectTerms")
+
+  offerings      SemesterOffering[]
+  courseVersions CourseVersion[]
+  outcomes       LearningOutcome[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -337,6 +372,8 @@ model Subject {
   @@index([userId])
 }
 
+// A lesson within a subject ("Dərs" / "Mövzu"). Its delivery on a concrete date
+// to a concrete group is a LessonMeeting — content and occurrence are separate.
 model Topic {
   id          String  @id @default(cuid())
   userId      String
@@ -347,10 +384,37 @@ model Topic {
   description String?
   position    Int     @default(0)
 
+  // lesson metadata
+  lessonType      String? // mühazirə | seminar | laboratoriya | praktika
+  durationMinutes Int?
+  module          String?
+  week            Int?
+  orderNo         Int?
+  prepStatus      String  @default("draft") // draft | in_progress | ready | needs_update
+
+  // lesson work page
+  objective         String? @db.Text // ümumi məqsəd
+  teachingNotes     String? @db.Text // izah qeydləri / danışıq planı
+  preClassPrep      String? @db.Text
+  prerequisites     String? @db.Text
+  stages            Json? // [{ name, minutes }]
+  misconceptions    String? @db.Text // tez-tez qarışdırılan anlayışlar
+  expectedQuestions String? @db.Text
+  reflection        String? @db.Text
+  nextLessonNote    String? @db.Text
+  homework          String? @db.Text
+
   subject  Subject     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   parent   Topic?      @relation("TopicTree", fields: [parentId], references: [id], onDelete: SetNull)
   children Topic[]     @relation("TopicTree")
   terms    TopicTerm[]
+
+  materials       LessonMaterial[]
+  outcomes        LearningOutcome[]
+  questions       Question[]
+  sourceLinks     SourceLink[]
+  meetingTopics   MeetingTopic[]
+  progressPointer GroupProgress[]   @relation("ProgressLastLesson")
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -391,37 +455,38 @@ model Term {
   id     String @id @default(cuid())
   userId String
 
-  name        String
-  slug        String
-  shortDef    String? @db.Text // "qısa izah"
-  longDef     String? @db.Text // "geniş elmi izah"
-  inMyWords   String? @db.Text // "öz sözlərimlə"
+  name         String
+  slug         String
+  shortDef     String? @db.Text // "qısa izah"
+  longDef      String? @db.Text // "geniş elmi izah"
+  inMyWords    String? @db.Text // "öz sözlərimlə"
   practicalUse String? @db.Text
 
   // `category` is the single, lightweight, colour-coded grouping (used by the
   // knowledge graph). `subjects` is the many-to-many academic classification:
   // one canonical term page can appear in many subjects and many lesson topics.
-  categoryId    String?
-  category      Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  subcategory   String?
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  subcategory String?
 
-  difficulty  Difficulty     @default(BEGINNER)
-  status      LearningStatus @default(NEW)
-  confidence  Int            @default(1) // 1..5 — şəxsi əminlik
-  importance  Int            @default(3) // 1..5 — vaciblik
+  difficulty Difficulty     @default(BEGINNER)
+  status     LearningStatus @default(NEW)
+  confidence Int            @default(1) // 1..5 — şəxsi əminlik
+  importance Int            @default(3) // 1..5 — vaciblik
 
   nextReviewAt DateTime?
 
   aliases      TermAlias[]
-  tags         Tag[]           @relation("TermTags")
-  collections  Collection[]    @relation("CollectionTerms")
-  subjects     Subject[]       @relation("SubjectTerms")
+  tags         Tag[]                 @relation("TermTags")
+  collections  Collection[]          @relation("CollectionTerms")
+  subjects     Subject[]             @relation("SubjectTerms")
   topicLinks   TopicTerm[]
   notes        Note[]
   examples     Example[]
   codeExamples CodeExample[]
   formulas     Formula[]
   sources      Source[]
+  sourceLinks  SourceLink[]
   attachments  Attachment[]
   embeddings   Embedding[]
   questions    Question[]
@@ -460,13 +525,13 @@ model TermAlias {
 }
 
 model TermRelation {
-  id       String       @id @default(cuid())
-  userId   String
-  fromId   String
-  toId     String
-  type     RelationType @default(SIMILAR)
+  id          String       @id @default(cuid())
+  userId      String
+  fromId      String
+  toId        String
+  type        RelationType @default(SIMILAR)
   customLabel String?
-  note     String?      @db.Text
+  note        String?      @db.Text
 
   from Term @relation("RelationFrom", fields: [fromId], references: [id], onDelete: Cascade)
   to   Term @relation("RelationTo", fields: [toId], references: [id], onDelete: Cascade)
@@ -483,13 +548,13 @@ model TermRelation {
 }
 
 model Note {
-  id      String  @id @default(cuid())
-  userId  String
-  termId  String
-  title   String?
-  body    String  @db.Text // markdown + latex
+  id            String  @id @default(cuid())
+  userId        String
+  termId        String
+  title         String?
+  body          String  @db.Text // markdown + latex
   isAiGenerated Boolean @default(false)
-  aiModel String?
+  aiModel       String?
 
   term Term @relation(fields: [termId], references: [id], onDelete: Cascade)
 
@@ -504,15 +569,15 @@ model Note {
 }
 
 model Example {
-  id      String      @id @default(cuid())
-  userId  String
-  termId  String
-  kind    ExampleKind @default(EVERYDAY)
-  title   String?
-  body    String      @db.Text
-  rating  Int?        // user's own 1..5 rating of how useful it is
-  isAiGenerated Boolean @default(false)
-  aiModel String?
+  id            String      @id @default(cuid())
+  userId        String
+  termId        String
+  kind          ExampleKind @default(EVERYDAY)
+  title         String?
+  body          String      @db.Text
+  rating        Int? // user's own 1..5 rating of how useful it is
+  isAiGenerated Boolean     @default(false)
+  aiModel       String?
 
   term Term @relation(fields: [termId], references: [id], onDelete: Cascade)
 
@@ -528,13 +593,13 @@ model Example {
 }
 
 model CodeExample {
-  id       String  @id @default(cuid())
-  userId   String
-  termId   String
-  language String  @default("text")
-  title    String?
-  code     String  @db.Text
-  explanation String? @db.Text
+  id            String  @id @default(cuid())
+  userId        String
+  termId        String
+  language      String  @default("text")
+  title         String?
+  code          String  @db.Text
+  explanation   String? @db.Text
   isAiGenerated Boolean @default(false)
 
   term Term @relation(fields: [termId], references: [id], onDelete: Cascade)
@@ -550,11 +615,11 @@ model CodeExample {
 }
 
 model Formula {
-  id      String  @id @default(cuid())
-  userId  String
-  termId  String
-  latex   String  @db.Text
-  caption String?
+  id          String  @id @default(cuid())
+  userId      String
+  termId      String
+  latex       String  @db.Text
+  caption     String?
   explanation String? @db.Text
 
   term Term @relation(fields: [termId], references: [id], onDelete: Cascade)
@@ -570,19 +635,24 @@ model Formula {
 }
 
 model Source {
-  id         String     @id @default(cuid())
-  userId     String
-  termId     String?
-  kind       SourceKind @default(WEBSITE)
-  title      String
-  authors    String?
-  year       Int?
-  doi        String?
-  url        String?
-  pages      String?
-  personalNote String?  @db.Text
+  id               String     @id @default(cuid())
+  userId           String
+  termId           String?
+  kind             SourceKind @default(WEBSITE)
+  title            String
+  authors          String?
+  year             Int?
+  publication      String?
+  publisher        String?
+  doi              String?
+  url              String?
+  language         String?
+  pages            String?
+  personalNote     String?    @db.Text
+  metadataVerified Boolean    @default(true)
 
-  term Term? @relation(fields: [termId], references: [id], onDelete: SetNull)
+  term  Term?        @relation(fields: [termId], references: [id], onDelete: SetNull)
+  links SourceLink[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -595,20 +665,21 @@ model Source {
 }
 
 model Attachment {
-  id          String         @id @default(cuid())
-  userId      String
-  termId      String?
-  kind        AttachmentKind @default(OTHER)
-  filename    String
-  mimeType    String
-  sizeBytes   Int
-  storageKey  String         // key inside the storage adapter
-  url         String?        // public URL if the driver exposes one
-  extractedText String?      @db.Text
-  indexed     Boolean        @default(false) // added to the RAG index?
-  checksum    String?
+  id            String         @id @default(cuid())
+  userId        String
+  termId        String?
+  kind          AttachmentKind @default(OTHER)
+  filename      String
+  mimeType      String
+  sizeBytes     Int
+  storageKey    String // key inside the storage adapter
+  url           String? // public URL if the driver exposes one
+  extractedText String?        @db.Text
+  indexed       Boolean        @default(false) // added to the RAG index?
+  checksum      String?
 
-  term Term? @relation(fields: [termId], references: [id], onDelete: SetNull)
+  term            Term?            @relation(fields: [termId], references: [id], onDelete: SetNull)
+  lessonMaterials LessonMaterial[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -625,17 +696,17 @@ model Attachment {
 // migration (Prisma cannot express `vector(1536)` as a first-class type yet).
 
 model Embedding {
-  id         String          @id @default(cuid())
-  userId     String
-  source     EmbeddingSource
-  sourceId   String          // id of Term / Note / Example / Attachment ...
-  termId     String?         // denormalised for fast per-term filtering
-  chunkIndex Int             @default(0)
-  content    String          @db.Text
-  tokenCount Int             @default(0)
-  model      String          // e.g. "text-embedding-3-small"
-  dimensions Int             @default(1536)
-  contentHash String         // skip re-embedding unchanged chunks
+  id          String          @id @default(cuid())
+  userId      String
+  source      EmbeddingSource
+  sourceId    String // id of Term / Note / Example / Attachment ...
+  termId      String? // denormalised for fast per-term filtering
+  chunkIndex  Int             @default(0)
+  content     String          @db.Text
+  tokenCount  Int             @default(0)
+  model       String // e.g. "text-embedding-3-small"
+  dimensions  Int             @default(1536)
+  contentHash String // skip re-embedding unchanged chunks
 
   // embedding  vector(1536)  -> added by migration `20240101000000_pgvector`
   embedding Unsupported("vector(1536)")?
@@ -656,9 +727,9 @@ model Embedding {
 // ─── AI chat / assistant ────────────────────────────────────────────────────
 
 model Chat {
-  id     String @id @default(cuid())
+  id     String    @id @default(cuid())
   userId String
-  title  String @default("Yeni söhbət")
+  title  String    @default("Yeni söhbət")
   mode   ChatMode  @default(TEACHER)
   scope  ChatScope @default(NOTES_ONLY)
 
@@ -682,13 +753,13 @@ model ChatMessage {
   content String @db.Text
 
   // Retrieval metadata for ASSISTANT messages (RAG provenance).
-  citations   Json?   // [{ embeddingId, termId, termName, snippet, score }]
-  confidence  Float?  // 0..1 answer/context relevance
-  hasGap      Boolean @default(false) // model reported missing info
+  citations            Json? // [{ embeddingId, termId, termName, snippet, score }]
+  confidence           Float? // 0..1 answer/context relevance
+  hasGap               Boolean @default(false) // model reported missing info
   usedGeneralKnowledge Boolean @default(false)
-  model       String?
-  promptTokens Int?
-  completionTokens Int?
+  model                String?
+  promptTokens         Int?
+  completionTokens     Int?
 
   helpfulVote Int? // 1 helpful, -1 not helpful, null unrated
 
@@ -706,7 +777,7 @@ model Quiz {
   userId String
   title  String
   source QuizSourceKind @default(RANDOM)
-  config Json?          // { categoryIds?, termIds?, size, types[] }
+  config Json? // { categoryIds?, termIds?, size, types[] }
 
   questions Question[]
   answers   Answer[]
@@ -725,20 +796,30 @@ model Quiz {
 }
 
 model Question {
-  id     String       @id @default(cuid())
-  userId String
-  quizId String?
-  termId String?
-  type   QuestionType @default(OPEN)
+  id        String       @id @default(cuid())
+  userId    String
+  quizId    String?
+  termId    String?
+  topicId   String?
+  outcomeId String?
+  type      QuestionType @default(OPEN)
 
-  prompt        String @db.Text
-  choices       Json?  // MCQ options
-  correctAnswer String @db.Text
+  prompt        String  @db.Text
+  choices       Json? // MCQ options
+  correctAnswer String  @db.Text
   explanation   String? @db.Text
   isAiGenerated Boolean @default(true)
 
-  quiz    Quiz?    @relation(fields: [quizId], references: [id], onDelete: Cascade)
-  term    Term?    @relation(fields: [termId], references: [id], onDelete: SetNull)
+  // assessment metadata
+  difficulty       String? // easy | medium | hard
+  points           Int?
+  estimatedMinutes Int?
+  criteria         String? @db.Text
+
+  quiz    Quiz?            @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  term    Term?            @relation(fields: [termId], references: [id], onDelete: SetNull)
+  topic   Topic?           @relation(fields: [topicId], references: [id], onDelete: SetNull)
+  outcome LearningOutcome? @relation(fields: [outcomeId], references: [id], onDelete: SetNull)
   answers Answer[]
 
   createdAt DateTime @default(now())
@@ -748,19 +829,20 @@ model Question {
   @@index([userId])
   @@index([quizId])
   @@index([termId])
+  @@index([topicId])
 }
 
 model Answer {
-  id         String @id @default(cuid())
+  id         String  @id @default(cuid())
   userId     String
   quizId     String?
   questionId String
 
-  response   String  @db.Text
-  isCorrect  Boolean?
-  scorePct   Float?   // semantic grading 0..100
-  feedback   String?  @db.Text // why it was wrong / right
-  gradedBy   String?  // "ai" | "exact" | "self"
+  response  String   @db.Text
+  isCorrect Boolean?
+  scorePct  Float? // semantic grading 0..100
+  feedback  String?  @db.Text // why it was wrong / right
+  gradedBy  String? // "ai" | "exact" | "self"
 
   quiz     Quiz?    @relation(fields: [quizId], references: [id], onDelete: Cascade)
   question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
@@ -782,9 +864,9 @@ model Review {
   grade  ReviewGrade
 
   // SM-2 style state snapshot AFTER this review
-  easeFactor   Float @default(2.5)
-  intervalDays Int   @default(0)
-  repetition   Int   @default(0)
+  easeFactor   Float    @default(2.5)
+  intervalDays Int      @default(0)
+  repetition   Int      @default(0)
   dueAt        DateTime
 
   source String @default("flashcard") // "flashcard" | "quiz" | "manual"
@@ -805,15 +887,15 @@ model LearningProgress {
   termId String @unique
 
   // Current SRS state (mirrors the latest Review for quick dashboard queries).
-  easeFactor   Float    @default(2.5)
-  intervalDays Int      @default(0)
-  repetition   Int      @default(0)
-  dueAt        DateTime @default(now())
-  lapses       Int      @default(0)
-  totalReviews Int      @default(0)
-  streak       Int      @default(0)
+  easeFactor     Float     @default(2.5)
+  intervalDays   Int       @default(0)
+  repetition     Int       @default(0)
+  dueAt          DateTime  @default(now())
+  lapses         Int       @default(0)
+  totalReviews   Int       @default(0)
+  streak         Int       @default(0)
   lastReviewedAt DateTime?
-  masteredAt   DateTime?
+  masteredAt     DateTime?
 
   term Term @relation(fields: [termId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -828,13 +910,13 @@ model LearningProgress {
 // ─── Activity log / audit ───────────────────────────────────────────────────
 
 model UserActivity {
-  id     String @id @default(cuid())
-  userId String
-  type   String // "term.created", "term.updated", "quiz.completed", "review.done", "chat.message", "login" ...
-  entity String? // "Term" | "Quiz" | ...
+  id       String  @id @default(cuid())
+  userId   String
+  type     String // "term.created", "term.updated", "quiz.completed", "review.done", "chat.message", "login" ...
+  entity   String? // "Term" | "Quiz" | ...
   entityId String?
-  meta   Json?
-  ip     String?
+  meta     Json?
+  ip       String?
 
   createdAt DateTime @default(now())
 
@@ -854,12 +936,12 @@ model AIContentSuggestion {
   type   SuggestionType
   status SuggestionStatus @default(PENDING)
 
-  payload Json   // shape depends on `type`
-  model   String
-  prompt  String? @db.Text
+  payload   Json // shape depends on `type`
+  model     String
+  prompt    String? @db.Text
   rationale String? @db.Text
 
-  reviewedAt DateTime?
+  reviewedAt      DateTime?
   appliedEntityId String? // id of the row created when accepted
 
   term Term @relation(fields: [termId], references: [id], onDelete: Cascade)
@@ -871,4 +953,328 @@ model AIContentSuggestion {
   @@index([userId])
   @@index([userId, status])
   @@index([termId])
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  Teaching workspace — course management (Fenn-Proqrami-Genislendirme-Promptu)
+//  Additive only: every model / field here is new or optional, so `prisma db
+//  push` applies without touching existing data.
+// ═══════════════════════════════════════════════════════════════════════════════
+
+model University {
+  id                  String  @id @default(cuid())
+  userId              String
+  name                String
+  shortName           String?
+  city                String?
+  academicHourMinutes Int     @default(45)
+  syllabusTemplate    Json?
+
+  faculties Faculty[]
+  groups    StudentGroup[]
+  offerings SemesterOffering[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model Faculty {
+  id           String  @id @default(cuid())
+  userId       String
+  universityId String
+  name         String
+  department   String?
+
+  university University         @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  offerings  SemesterOffering[]
+
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([universityId])
+}
+
+model StudentGroup {
+  id           String  @id @default(cuid())
+  userId       String
+  universityId String?
+  name         String
+  studentCount Int?
+  specialty    String?
+  contactInfo  String?
+
+  university    University?     @relation(fields: [universityId], references: [id], onDelete: SetNull)
+  offeringLinks OfferingGroup[]
+  progress      GroupProgress[]
+  meetings      LessonMeeting[]
+
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model SemesterOffering {
+  id              String  @id @default(cuid())
+  userId          String
+  subjectId       String
+  universityId    String
+  facultyId       String?
+  courseVersionId String?
+
+  academicYear      String
+  term              String
+  language          String  @default("az")
+  format            String?
+  teacherName       String?
+  contactInfo       String?
+  consultationHours String?
+  creditHours       Float?
+  lectureHours      Int?
+  seminarHours      Int?
+  labHours          Int?
+  practiceHours     Int?
+  selfStudyHours    Int?
+  status            String  @default("draft")
+
+  subject       Subject         @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  university    University      @relation(fields: [universityId], references: [id], onDelete: Restrict)
+  faculty       Faculty?        @relation(fields: [facultyId], references: [id], onDelete: SetNull)
+  courseVersion CourseVersion?  @relation(fields: [courseVersionId], references: [id], onDelete: SetNull)
+  groupLinks    OfferingGroup[]
+  meetings      LessonMeeting[]
+  progress      GroupProgress[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([subjectId])
+  @@index([universityId])
+}
+
+model OfferingGroup {
+  id         String @id @default(cuid())
+  userId     String
+  offeringId String
+  groupId    String
+
+  offering SemesterOffering @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  group    StudentGroup     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([offeringId, groupId])
+  @@index([userId])
+}
+
+model GroupProgress {
+  id           String  @id @default(cuid())
+  userId       String
+  offeringId   String
+  groupId      String
+  lastLessonId String?
+  note         String? @db.Text
+  nextStep     String? @db.Text
+
+  offering   SemesterOffering @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  group      StudentGroup     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  lastLesson Topic?           @relation("ProgressLastLesson", fields: [lastLessonId], references: [id], onDelete: SetNull)
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+
+  @@unique([offeringId, groupId])
+  @@index([userId])
+}
+
+model CourseVersion {
+  id          String    @id @default(cuid())
+  userId      String
+  subjectId   String
+  label       String
+  kind        String    @default("program")
+  status      String    @default("draft")
+  description String?   @db.Text
+  objective   String?   @db.Text
+  snapshot    Json?
+  publishedAt DateTime?
+
+  subject     Subject               @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  sections    SyllabusSection[]
+  outcomes    LearningOutcome[]
+  assessments AssessmentComponent[]
+  offerings   SemesterOffering[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([subjectId])
+}
+
+model SyllabusSection {
+  id              String  @id @default(cuid())
+  userId          String
+  courseVersionId String
+  key             String?
+  title           String
+  body            String  @db.Text
+  position        Int     @default(0)
+  hidden          Boolean @default(false)
+  required        Boolean @default(false)
+
+  courseVersion CourseVersion @relation(fields: [courseVersionId], references: [id], onDelete: Cascade)
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([courseVersionId, position])
+}
+
+model LearningOutcome {
+  id              String  @id @default(cuid())
+  userId          String
+  kind            String
+  subjectId       String?
+  courseVersionId String?
+  topicId         String?
+  code            String?
+  text            String  @db.Text
+  bloomLevel      String?
+  criteria        String? @db.Text
+  position        Int     @default(0)
+
+  subject       Subject?       @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  courseVersion CourseVersion? @relation(fields: [courseVersionId], references: [id], onDelete: Cascade)
+  topic         Topic?         @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  questions     Question[]
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([subjectId])
+  @@index([topicId])
+}
+
+model AssessmentComponent {
+  id              String  @id @default(cuid())
+  userId          String
+  courseVersionId String
+  name            String
+  weight          Float   @default(0)
+  criteria        String? @db.Text
+  dueInfo         String?
+  position        Int     @default(0)
+
+  courseVersion CourseVersion @relation(fields: [courseVersionId], references: [id], onDelete: Cascade)
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([courseVersionId])
+}
+
+model LessonMeeting {
+  id         String    @id @default(cuid())
+  userId     String
+  offeringId String
+  groupId    String
+  date       DateTime?
+  room       String?
+  onlineUrl  String?
+  status     String    @default("planned")
+  note       String?   @db.Text
+
+  offering SemesterOffering @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  group    StudentGroup     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  topics   MeetingTopic[]
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([offeringId, groupId])
+  @@index([date])
+}
+
+model MeetingTopic {
+  id        String  @id @default(cuid())
+  userId    String
+  meetingId String
+  topicId   String
+  coverage  String?
+
+  meeting LessonMeeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  topic   Topic         @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  user    User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([meetingId, topicId])
+  @@index([userId])
+  @@index([topicId])
+}
+
+model LessonMaterial {
+  id           String  @id @default(cuid())
+  userId       String
+  topicId      String
+  kind         String
+  title        String?
+  body         String? @db.Text
+  url          String?
+  attachmentId String?
+  position     Int     @default(0)
+
+  topic      Topic       @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  attachment Attachment? @relation(fields: [attachmentId], references: [id], onDelete: SetNull)
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([topicId, position])
+}
+
+model SourceLink {
+  id             String  @id @default(cuid())
+  userId         String
+  sourceId       String
+  topicId        String?
+  termId         String?
+  chapter        String?
+  pages          String?
+  videoTimestamp String?
+  role           String?
+  isRead         Boolean @default(false)
+
+  source Source @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  topic  Topic? @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  term   Term?  @relation(fields: [termId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([topicId])
+  @@index([termId])
+  @@index([sourceId])
 }
