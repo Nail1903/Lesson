@@ -138,36 +138,43 @@ export function WeeklyPlanner({
                   {dayClasses.map((c) => (
                     <div
                       key={c.id}
-                      className="group relative rounded-md border-l-4 bg-card p-2 text-xs shadow-sm"
+                      className="flex items-start gap-1 rounded-md border-l-4 bg-card p-2 text-xs shadow-sm"
                       style={{ borderLeftColor: colorFor(c) }}
                     >
                       <button
+                        type="button"
                         onClick={() => setDialog({ weekday: c.weekday, edit: c })}
-                        className="block w-full pr-4 text-left"
+                        className="min-w-0 flex-1 text-left"
                       >
-                        <span className="font-medium leading-tight">{c.subject.name}</span>
+                        <span className="block font-medium leading-tight">{c.subject.name}</span>
                         <span className="mt-0.5 block text-muted-foreground">
                           {c.startTime}–{c.endTime}
                           {c.groupLabel && ` · ${c.groupLabel}`}
                           {c.room && ` · ${c.room}`}
                         </span>
                         {c.university && (
-                          <span className="text-[10px] text-muted-foreground">
+                          <span className="block text-[10px] text-muted-foreground">
                             {c.university.logoEmoji} {c.university.shortName || c.university.name}
                           </span>
                         )}
                       </button>
                       <button
-                        className="absolute right-1 top-1 text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100 print:hidden"
-                        onClick={() =>
+                        type="button"
+                        aria-label="Sil"
+                        className="shrink-0 rounded p-0.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive print:hidden"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!confirm(`"${c.subject.name}" dərsi cədvəldən silinsin?`)) return;
                           start(async () => {
                             const res = await deleteWeeklyClassAction(c.id);
-                            if (res.ok) router.refresh();
-                            else toast.error(res.error);
-                          })
-                        }
+                            if (res.ok) {
+                              toast.success("Silindi");
+                              router.refresh();
+                            } else toast.error(res.error);
+                          });
+                        }}
                       >
-                        <X className="h-3.5 w-3.5" />
+                        <X className="h-4 w-4" />
                       </button>
                     </div>
                   ))}
